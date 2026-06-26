@@ -47,27 +47,21 @@ jobs:
       - name: 安裝工具
         run: sudo apt-get install -y wget
 
-      # 加密貨幣（每次都跑）
+      # ── 加密貨幣：不是台股專屬排程時都執行 ──
       - name: 抓取 BTC / DOGE 數據
-        if: github.event.inputs.mode != 'taifex_only'
+        if: >
+          github.event.inputs.mode != 'taifex_only' &&
+          (github.event_name == 'workflow_dispatch' ||
+           github.event.schedule == '0 0,4,8,12,16,20 * * *' ||
+           github.event.schedule == '0 9 * * 1-5')
         run: python scripts/fetch_crypto.py
 
-      # 台股期貨（只在 09:00 UTC 週一至週五，或手動指定時跑）
-      - name: 判斷是否需要抓台股期貨
-        id: check_taifex
-        run: |
-          HOUR=$(date -u +%H)
-          WDAY=$(date -u +%u)
-          MODE="${{ github.event.inputs.mode }}"
-          if [[ "$MODE" == "taifex_only" || "$MODE" == "all" || \
-               ("$HOUR" == "09" && "$WDAY" -le 5) ]]; then
-            echo "run=true" >> $GITHUB_OUTPUT
-          else
-            echo "run=false" >> $GITHUB_OUTPUT
-          fi
-
+      # ── 台股期貨：只在 UTC 09:00 排程 或 手動指定時執行 ──
       - name: 抓取期交所數據（含重試）
-        if: steps.check_taifex.outputs.run == 'true'
+        if: >
+          github.event.inputs.mode == 'taifex_only' ||
+          github.event.inputs.mode == 'all' ||
+          github.event.schedule == '0 9 * * 1-5'
         id: fetch_taifex
         run: python scripts/fetch_taifex.py
         continue-on-error: true
@@ -89,7 +83,6 @@ jobs:
           git add data.json
           git diff --cached --quiet && echo "無變更，跳過 commit" && exit 0
           git commit -m "chore: 自動更新數據 $(date +'%Y/%m/%d %H:%M UTC') [skip ci]"
-          # pull --rebase 防止並發衝突
           git pull --rebase origin main
           git push
 
