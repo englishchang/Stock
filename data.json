@@ -34,5 +34,13 @@
     "tmf": 43,
     "pc": 36,
     "overall": 62
+  },
+  "crypto": {
+    "fetched_at": "2026/06/26 15:14",
+    "period": "4h",
+    "data": {
+      "BTCUSDT": null,
+      "DOGEUSDT": null
+    }
   }
 }
