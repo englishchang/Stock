@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 台灣期貨交易所散戶籌碼數據抓取
-解析 markdown table 格式（| 分隔）
+解析 HTML <td> 標籤，取倒數第2個數字 = 未平倉多空淨額口數
 """
 import json, re, sys, subprocess, time
 from datetime import datetime, timezone, timedelta
@@ -20,8 +20,8 @@ def wget_fetch(url, retries=4, wait=12):
                    "--header=Accept-Language: zh-TW,zh;q=0.9",
                    "--header=Referer: https://www.taifex.com.tw/cht/3/futContractsDate",
                    url]
-            result = subprocess.run(cmd, capture_output=True, timeout=50)
-            raw = result.stdout
+            r = subprocess.run(cmd, capture_output=True, timeout=50)
+            raw = r.stdout
             if not raw:
                 raise Exception("空白回應")
             for enc in ("utf-8", "big5", "cp950"):
@@ -39,10 +39,12 @@ def wget_fetch(url, retries=4, wait=12):
                 time.sleep(wait)
     raise Exception(f"連線失敗，已重試 {retries} 次")
 
+def strip_tags(s):
+    return re.sub(r'<[^>]+>', '', s).strip()
+
 def parse_num(s):
-    s = str(s).strip().replace(",", "").replace("，", "").replace(" ", "")
-    # 處理負號（全形或括號）
-    s = s.replace("－", "-").replace("−", "-")
+    s = strip_tags(str(s)).replace(",","").replace("，","").replace(" ","")
+    s = s.replace("－","-").replace("−","-")
     if s.startswith("(") and s.endswith(")"):
         s = "-" + s[1:-1]
     try:
@@ -50,42 +52,34 @@ def parse_num(s):
     except Exception:
         return None
 
-def extract_date(text):
-    m = re.search(r"日期\s*(\d{4}/\d{2}/\d{2})", text)
+def extract_date(html):
+    m = re.search(r"日期\s*(\d{4}/\d{2}/\d{2})", html)
     if m: return m.group(1)
-    m = re.search(r"(\d{4}/\d{2}/\d{2})", text)
+    m = re.search(r"(\d{4}/\d{2}/\d{2})", html)
     return m.group(1) if m else datetime.now(TZ_TAIPEI).strftime("%Y/%m/%d")
 
-def parse_md_rows(text):
-    """解析 markdown table，回傳 list of list of str"""
+def html_to_rows(html):
+    """HTML <tr><td>...</td></tr> → list of list of str"""
     rows = []
-    for line in text.split("\n"):
-        line = line.strip()
-        if not line.startswith("|"):
-            continue
-        cells = [c.strip() for c in line.split("|")]
-        # 去掉頭尾空字串
-        cells = [c for c in cells if c != ""]
+    for tr in re.findall(r'<tr[^>]*>(.*?)</tr>', html, re.DOTALL | re.IGNORECASE):
+        cells = re.findall(r'<td[^>]*>(.*?)</td>', tr, re.DOTALL | re.IGNORECASE)
+        cells = [strip_tags(c) for c in cells]
         if cells:
             rows.append(cells)
     return rows
 
-def parse_futures(text):
-    date = extract_date(text)
-    # 目標契約對照
-    targets = {
-        "臺股期貨": "tx",
-        "小型臺指期貨": "mtx",
-        "微型臺指期貨": "tmf",
-    }
+def parse_futures(html):
+    date = extract_date(html)
+    targets = {"臺股期貨": "tx", "小型臺指期貨": "mtx", "微型臺指期貨": "tmf"}
     result = {v: {"dealer": 0, "trust": 0, "foreign": 0, "total": 0} for v in targets.values()}
 
-    rows = parse_md_rows(text)
+    rows = html_to_rows(html)
     current = None
 
     for cells in rows:
-        # 合併所有格文字偵測契約名稱
         row_text = " ".join(cells)
+
+        # 偵測契約名稱
         for name, key in targets.items():
             if name in row_text:
                 current = key
@@ -100,23 +94,18 @@ def parse_futures(text):
             if "自營商" in c: identity = "dealer"; break
             if "投信"  in c: identity = "trust";  break
             if "外資"  in c: identity = "foreign"; break
-
         if identity is None:
             continue
 
-        # 提取所有數字欄（可能含負號）
-        nums = []
-        for c in cells:
-            v = parse_num(c)
-            if v is not None:
-                nums.append(v)
+        # 提取所有整數
+        nums = [parse_num(c) for c in cells if parse_num(c) is not None]
 
-        # 表格結構：多方口數,多方金額,空方口數,空方金額,淨額口數,淨額金額（交易） + 同6欄（未平倉）= 共12個數字
-        # 未平倉多空淨額口數 = index 10（第11個數字）
-        if len(nums) >= 11:
-            net_oi = nums[10]
+        # 每行共 12~13 個數字（自營商第一行含序號多1個）
+        # 未平倉多空淨額口數 = 倒數第 2 個（最後是金額，倒數第2是口數）
+        if len(nums) >= 12:
+            net_oi = nums[-2]
             result[current][identity] = net_oi
-            print(f"   ✓ {current} {identity}: 未平倉淨額={net_oi}", flush=True)
+            print(f"   ✓ {current} {identity}: {net_oi}", flush=True)
             if identity == "foreign":
                 r = result[current]
                 r["total"] = r["dealer"] + r["trust"] + r["foreign"]
@@ -124,16 +113,15 @@ def parse_futures(text):
 
     return date, result
 
-
-def parse_options(text):
-    opt_date = extract_date(text)
+def parse_options(html):
+    opt_date = extract_date(html)
     opt = {
         "foreign_call": 0, "foreign_put": 0,
         "dealer_call":  0, "dealer_put":  0,
         "trust_call":   0, "trust_put":   0,
         "opt_date": opt_date,
     }
-    rows = parse_md_rows(text)
+    rows = html_to_rows(html)
     in_txo = False
     is_call = True
 
@@ -155,10 +143,10 @@ def parse_options(text):
             continue
 
         nums = [parse_num(c) for c in cells if parse_num(c) is not None]
-        # 未平倉買方口數 = index 6（第7個數字）
-        if len(nums) >= 7:
+        # 未平倉買方口數同樣取倒數第2
+        if len(nums) >= 12:
             key = f"{identity}_{'call' if is_call else 'put'}"
-            opt[key] = nums[6]
+            opt[key] = nums[-2]
 
     return opt
 
@@ -188,12 +176,12 @@ def main():
 
     print("📡 抓取期交所期貨數據...", flush=True)
     try:
-        fut_text = wget_fetch(FUTURES_URL)
-        print(f"   回傳長度：{len(fut_text)} chars", flush=True)
-        date, contracts = parse_futures(fut_text)
+        fut_html = wget_fetch(FUTURES_URL)
+        print(f"   回傳長度：{len(fut_html)} chars", flush=True)
+        date, contracts = parse_futures(fut_html)
         if all(v["total"] == 0 for v in contracts.values()):
             raise Exception("所有期貨數據解析為 0")
-        print(f"✅ 期貨日期：{date}", flush=True)
+        print(f"✅ 日期：{date}", flush=True)
         for k, v in contracts.items():
             print(f"   {k}: {v}", flush=True)
     except Exception as e:
@@ -210,8 +198,8 @@ def main():
 
     print("📡 抓取選擇權數據...", flush=True)
     try:
-        opt_text = wget_fetch(OPTIONS_URL)
-        opt = parse_options(opt_text)
+        opt_html = wget_fetch(OPTIONS_URL)
+        opt = parse_options(opt_html)
         print(f"✅ 選擇權日期：{opt['opt_date']}", flush=True)
         print(f"   外資 Call/Put：{opt['foreign_call']} / {opt['foreign_put']}", flush=True)
     except Exception as e:
@@ -224,13 +212,9 @@ def main():
 
     existing = load_existing() or {}
     output = {
-        "date": date,
-        "fetched_at": now_str,
-        "tx":  contracts["tx"],
-        "mtx": contracts["mtx"],
-        "tmf": contracts["tmf"],
-        "options": opt,
-        "scores": scores,
+        "date": date, "fetched_at": now_str,
+        "tx": contracts["tx"], "mtx": contracts["mtx"], "tmf": contracts["tmf"],
+        "options": opt, "scores": scores,
     }
     if "crypto" in existing:
         output["crypto"] = existing["crypto"]
