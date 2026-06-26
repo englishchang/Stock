@@ -215,10 +215,9 @@ tbody td:first-child{text-align:left;font-weight:500;}
   <div class="tbl-card"><table>
     <thead><tr><th>指標</th><th>說明</th><th>反指標？</th><th>權重</th></tr></thead>
     <tbody>
-      <tr><td>散戶多空比</td><td>全市場帳戶多頭% vs 空頭%</td><td class="bull">是（多頭過多→警示）</td><td>35%</td></tr>
-      <tr><td>大戶多空比</td><td>前20%資金大戶帳戶多空</td><td class="bear">否（大戶多→偏多）</td><td>30%</td></tr>
-      <tr><td>Taker 買賣比</td><td>主動買入 vs 主動賣出量</td><td class="bear">否（買多→動能強）</td><td>20%</td></tr>
-      <tr><td>資金費率</td><td>期貨溢價率（正=多頭付費）</td><td class="neu">中性參考</td><td>15%</td></tr>
+      <tr><td>恐懼貪婪指數</td><td>Alternative.me 綜合市場情緒（0=極恐 100=極貪）</td><td class="bull">是（貪婪>75 → 警示）</td><td>50%</td></tr>
+      <tr><td>BTC 市佔率</td><td>BTC 佔全加密市值% (低=山寨季=散戶狂熱)</td><td class="bull">是（&lt;46% 危險）</td><td>30%</td></tr>
+      <tr><td>7日價格動能</td><td>7日漲跌幅（大漲後散戶追多 → 偏高）</td><td class="bull">是（暴漲→警示）</td><td>20%</td></tr>
     </tbody>
   </table></div>
 
@@ -276,25 +275,26 @@ function renderTaifex(d){
     "<tr class='hl'><td>綜合評分</td><td>期貨60%/選擇權40%</td><td>—</td><td class='"+sc(ov)+"'>"+ov+"</td><td class='"+sc(ov)+"'>"+slFull(ov)+"</td></tr>";
 }
 
+function fgLabel(v){if(v>=80)return"極度貪婪";if(v>=60)return"貪婪";if(v>=40)return"中性";if(v>=20)return"恐懼";return"極度恐懼";}
+function fgColor(v){if(v>=75)return"var(--bull)";if(v>=50)return"var(--orange)";if(v>=25)return"var(--neu)";return"var(--bear)";}
 function makeCryptoCard(sym, info){
-  if(!info) return '<div class="crypto-card"><div style="color:var(--muted);font-size:12px;">'+sym+' 數據不可用</div></div>';
+  if(!info) return '<div class="crypto-card"><div style="color:var(--muted);font-size:12px;padding:8px;">'+sym+' 數據不可用</div></div>';
   var s=info.scores||{},ov=s.overall||50;
-  var ls=info.ls_ratio||{},top=info.top_ls_ratio||{},tk=info.taker_ratio||{};
+  var fg=info.fear_greed||{},fgv=fg.value||50;
   var name=sym==="BTCUSDT"?"Bitcoin (BTC)":"Dogecoin (DOGE)";
   var emoji=sym==="BTCUSDT"?"₿":"🐕";
   var priceStr=sym==="BTCUSDT"?
     "$"+(info.price||0).toLocaleString("en",{maximumFractionDigits:0}):
     "$"+(info.price||0).toFixed(5);
   var borderCol=ov>=65?"var(--bull)":ov<=35?"var(--bear)":"var(--muted)";
-  var bgCol=ov>=65?"rgba(192,57,43,0.06)":ov<=35?"rgba(26,140,94,0.06)":"transparent";
+  var bgCol=ov>=65?"rgba(192,57,43,0.07)":ov<=35?"rgba(26,140,94,0.07)":"transparent";
   var numCls=ov>=65?"bull":ov<=35?"bear":"neu";
-  var fund=(info.funding_rate||0).toFixed(4);
-  var fundCls=parseFloat(fund)>=0?"bull":"bear";
-
+  var ch24=info.change_24h||0,ch7=info.change_7d||0;
+  var dom=info.btc_dominance||52;
   return '<div class="crypto-card">'+
     '<div class="cc-header">'+
       '<span class="cc-name">'+emoji+' '+name+'</span>'+
-      '<span class="cc-price">'+priceStr+' USDT</span>'+
+      '<span class="cc-price">'+priceStr+'</span>'+
     '</div>'+
     '<div class="cc-score-row">'+
       '<div class="cc-circle" style="border-color:'+borderCol+';background:'+bgCol+';">'+
@@ -303,15 +303,15 @@ function makeCryptoCard(sym, info){
       '</div>'+
       '<div>'+
         '<div class="cc-label">'+sl(ov)+'</div>'+
-        '<div class="cc-sub">綜合情緒評分</div>'+
+        '<div class="cc-sub">散戶情緒評分（越高=越危險）</div>'+
         '<div class="bar-track cc-bar-track" style="margin-top:6px;"><div class="cc-bar" style="width:'+ov+'%"></div></div>'+
       '</div>'+
     '</div>'+
     '<div class="cc-stats">'+
-      '<div class="cc-stat"><div class="cs-label">散戶多頭%</div><div class="cs-val '+(ls.long_pct>60?"bull":ls.long_pct<40?"bear":"neu")+'">'+(ls.long_pct||0)+'%</div><div class="cs-sub">反指標 · 多頭>65%⚠</div></div>'+
-      '<div class="cc-stat"><div class="cs-label">大戶多頭%</div><div class="cs-val '+(top.long_pct>55?"bull":top.long_pct<45?"bear":"neu")+'">'+(top.long_pct||0)+'%</div><div class="cs-sub">順指標 · 大戶領先</div></div>'+
-      '<div class="cc-stat"><div class="cs-label">Taker 買方%</div><div class="cs-val '+(tk.buy_pct>55?"bull":tk.buy_pct<45?"bear":"neu")+'">'+(tk.buy_pct||0)+'%</div><div class="cs-sub">短線動能</div></div>'+
-      '<div class="cc-stat"><div class="cs-label">資金費率</div><div class="cs-val '+fundCls+'">'+fund+'%</div><div class="cs-sub">'+(parseFloat(fund)>=0?"多頭溢價":"空頭溢價")+'</div></div>'+
+      '<div class="cc-stat"><div class="cs-label">恐懼貪婪指數</div><div class="cs-val" style="color:'+fgColor(fgv)+'">'+fgv+' · '+fgLabel(fgv)+'</div><div class="cs-sub">反指標 · &gt;75貪婪⚠</div></div>'+
+      '<div class="cc-stat"><div class="cs-label">BTC市佔率</div><div class="cs-val '+(dom<46?"bull":dom>58?"bear":"neu")+'">'+dom+'%</div><div class="cs-sub">&lt;46% 山寨季⚠</div></div>'+
+      '<div class="cc-stat"><div class="cs-label">24h 漲跌</div><div class="cs-val '+(ch24>=0?"bull":"bear")+'">'+(ch24>=0?"+":"")+ch24+'%</div><div class="cs-sub">近日動能</div></div>'+
+      '<div class="cc-stat"><div class="cs-label">7d 漲跌</div><div class="cs-val '+(ch7>=0?"bull":"bear")+'">'+(ch7>=0?"+":"")+ch7+'%</div><div class="cs-sub">週線趨勢</div></div>'+
     '</div>'+
   '</div>';
 }

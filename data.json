@@ -36,8 +36,13 @@
     "overall": 62
   },
   "crypto": {
-    "fetched_at": "2026/06/26 15:41",
+    "fetched_at": "2026/06/26 15:43",
     "period": "4h",
+    "fear_greed": {
+      "value": 50,
+      "label": "Neutral"
+    },
+    "btc_dominance": 52.0,
     "data": {
       "BTCUSDT": null,
       "DOGEUSDT": null
