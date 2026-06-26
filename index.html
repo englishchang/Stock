@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>台灣期貨散戶籌碼儀表板 · TAIFEX</title>
+<style>
+  :root {
+    --bg: #f8f8f6;
+    --card: #ffffff;
+    --border: rgba(0,0,0,0.09);
+    --text: #0b0b0b;
+    --muted: #888781;
+    --sub: #52514e;
+    --bull: #c0392b;
+    --bear: #1a8c5e;
+    --neutral: #888781;
+    --accent: #2a78d6;
+    --warn: #ba7517;
+    --radius: 10px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 0 0 0.5px rgba(0,0,0,0.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141412;
+      --card: #1e1e1c;
+      --border: rgba(255,255,255,0.09);
+      --text: #f5f5f0;
+      --muted: #888781;
+      --sub: #b0af9f;
+      --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 0 0 0.5px rgba(255,255,255,0.08);
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+  .topbar {
+    background: var(--card);
+    border-bottom: 0.5px solid var(--border);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 10px; }
+  .logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bull); }
+  .topbar-title { font-size: 14px; font-weight: 500; color: var(--text); }
+  .topbar-badge { font-size: 10px; background: rgba(42,120,214,0.12); color: var(--accent); padding: 2px 8px; border-radius: 4px; font-weight: 500; }
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .date-label { font-size: 11px; color: var(--muted); }
+  .refresh-btn {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 500;
+    background: var(--text); color: var(--bg);
+    border: none; border-radius: 6px;
+    padding: 7px 14px; cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .refresh-btn:hover { opacity: 0.82; }
+  .refresh-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .refresh-btn svg { width: 13px; height: 13px; }
+  .refresh-btn.spinning svg { animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .container { max-width: 900px; margin: 0 auto; padding: 24px 20px 48px; }
+  .score-hero {
+    background: var(--card);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 24px 28px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .score-circle {
+    width: 96px; height: 96px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; flex-shrink: 0;
+    border: 3px solid var(--bull);
+    background: rgba(192,57,43,0.06);
+  }
+  .score-num { font-size: 36px; font-weight: 600; color: var(--bull); line-height: 1; }
+  .score-max { font-size: 11px; color: var(--muted); }
+  .score-info { flex: 1; }
+  .score-title { font-size: 17px; font-weight: 500; margin-bottom: 5px; }
+  .score-desc { font-size: 12px; color: var(--sub); line-height: 1.7; }
+  .score-bar-track { width: 100%; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 10px; }
+  .score-bar-fill { height: 6px; border-radius: 3px; background: linear-gradient(90deg, #1a8c5e 0%, #ba7517 50%, #c0392b 100%); transition: width 0.5s; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .tag { font-size: 10px; padding: 3px 9px; border-radius: 4px; font-weight: 500; }
+  .tag-bull { background: rgba(192,57,43,0.1); color: var(--bull); }
+  .tag-bear { background: rgba(26,140,94,0.1); color: var(--bear); }
+  .tag-neu { background: var(--bg); color: var(--muted); border: 0.5px solid var(--border); }
+
+  .gauges { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 640px) { .gauges { grid-template-columns: repeat(2, 1fr); } }
+  .gauge-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px 12px 14px;
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center;
+  }
+  .gauge-title { font-size: 11px; color: var(--muted); margin-bottom: 8px; line-height: 1.4; min-height: 28px; }
+  .gauge-svg { width: 100%; max-width: 110px; }
+  .gauge-score { font-size: 20px; font-weight: 600; margin-top: 6px; }
+  .gauge-sub { font-size: 10px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+
+  .section { margin-bottom: 16px; }
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .table-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead th { padding: 9px 12px; text-align: right; color: var(--muted); font-weight: 400; font-size: 11px; border-bottom: 0.5px solid var(--border); background: var(--bg); }
+  thead th:first-child { text-align: left; }
+  tbody td { padding: 9px 12px; text-align: right; border-bottom: 0.5px solid var(--border); color: var(--text); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td:first-child { text-align: left; font-weight: 500; }
+  .bull { color: var(--bull); }
+  .bear { color: var(--bear); }
+  .neu { color: var(--muted); }
+  .highlight-row { background: rgba(42,120,214,0.04); font-weight: 500; }
+
+  .loading-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.35);
+    display: none; align-items: center; justify-content: center;
+    flex-direction: column; gap: 14px;
+  }
+  .loading-overlay.show { display: flex; }
+  .loading-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 28px 36px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  }
+  .loading-spinner {
+    width: 36px; height: 36px; margin: 0 auto 14px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  .loading-text { font-size: 13px; color: var(--sub); }
+  .loading-step { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  .footer { text-align: center; font-size: 10px; color: var(--muted); margin-top: 32px; line-height: 1.8; }
+  .api-error { background: rgba(192,57,43,0.08); border: 0.5px solid rgba(192,57,43,0.2); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--bull); margin-bottom: 12px; display: none; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo-dot"></div>
+    <span class="topbar-title">台灣期貨散戶籌碼儀表板</span>
+    <span class="topbar-badge">TAIFEX</span>
+  </div>
+  <div class="topbar-right">
+    <span class="date-label" id="date-label">資料日期：載入中...</span>
+    <button class="refresh-btn" id="refresh-btn" onclick="refreshData()">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M13.5 8A5.5 5.5 0 1 1 10 3.07"/>
+        <path d="M13.5 2.5v3.5H10"/>
+      </svg>
+      即時更新
+    </button>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loading-overlay">
+  <div class="loading-card">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">正在向期交所取得最新籌碼數據...</div>
+    <div class="loading-step" id="loading-step">連線期交所 API 中</div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="api-error" id="api-error"></div>
+
+  <div class="score-hero">
+    <div class="score-circle" id="score-circle">
+      <span class="score-num" id="overall-score">62</span>
+      <span class="score-max">/100</span>
+    </div>
+    <div class="score-info">
+      <div class="score-title" id="score-title">散戶綜合情緒：中度偏多</div>
+      <div class="score-desc" id="score-desc">綜合台指期、小台、微台多空比及選擇權 P/C 比加權計算（期貨60% / 選擇權40%）。<br>分數 ≥65 = 極端偏多（反指標警示）；35–65 = 中性區；≤35 = 偏空。</div>
+      <div class="score-bar-track"><div class="score-bar-fill" id="score-bar" style="width:62%"></div></div>
+      <div class="tags">
+        <span class="tag tag-bull">台指期 散戶偏多</span>
+        <span class="tag tag-bull">小台 散戶偏多</span>
+        <span class="tag tag-neu">微台 接近中性</span>
+        <span class="tag tag-bear">選擇權 外資賣權較重</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="gauges">
+    <div class="gauge-card">
+      <div class="gauge-title">台指期（TX）<br>散戶多空比</div>
+      <svg class="gauge-svg" viewBox="0 0 110 60" role="img" aria-label="台指期散戶多空比量表">
+        <defs>
+          <linearGradient id="grd" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#1a8c5e"/>
+            <stop offset="50%" stop-color="#ba7517"/>
+            <stop offset="100%" stop-color="#c0392b"/>
+          </linearGradient>
+        </defs>
+        <path d="M8,55 A47,47 0 0,1 102,55" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="8" stroke-linecap="round"/>
+        <path d="M8,55 A47,47 0 0,1 102,55" fill="none" stroke="url(#grd)" stroke-width="8" stroke-linecap="round" stroke-dasharray="148" id="g-tx" stroke-dashoffset="55"/>
+        <line id="needle-tx" x1="55" y1="55" x2="55" y2="14" stroke="#0b0b0b" stroke-width="2" stroke-linecap="round" transform="rotate(-18 55 55)"/>
+        <circle cx="55" cy="55" r="4" fill="#0b0b0b"/>
+      </svg>
+      <div class="gauge-score bull" id="g-score-tx">65</div>
+      <div class="gauge-sub" id="g-sub-tx">外資淨空<br>−81,051口</div>
+    </div>
+    <div class="gauge-card">
+      <div class="gauge-title">小台（MTX）<br>散戶多空比</div>
+      <svg class="gauge-svg" viewBox="0 0 110 60" role="img" aria-label="小台散戶多空比量表">
+        <path d="M8,55 A47,47 0 0,1 102,55" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="8" stroke-linecap="round"/>
+        <path d="M8,55 A47,47 0 0,1 102,55" fill="none" stroke="url(#grd)" stroke-width="8" stroke-linecap="round" stroke-dasharray="148" id="g-mtx" stroke-dashoffset="58"/>
+        <line id="needle-mtx" x1="55" y1="55" x2="55" y2="14" stroke="#0b0b0b" stroke-width="2" stroke-linecap="round" transform="rotate(-14 55 55)"/>
+        <circle cx="55" cy="55" r="4" fill="#0b0b0b"/>
+      </svg>
+      <div class="gauge-score bull" id="g-score-mtx">62</div>
+      <div class="gauge-sub" id="g-sub-mtx">法人合計淨空<br>−6,464口</div>
+    </div>
+    <div class="gauge-card">
+      <div class="gauge-title">微台（TMF）<br>散戶多空比</div>
+      <svg class="gauge-svg" viewBox="0 0 110 60" role="img" aria-label="微台散戶多空比量表">
+        <path d="M8,55 A47,47 0 0,1 102,55" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="8" stroke-linecap="round"/>
+        <path d="M8,55 A47,47 0 0,1 102,55" fill="none" stroke="url(#grd)" stroke-width="8" stroke-linecap="round" stroke-dasharray="148" id="g-tmf" stroke-dashoffset="84"/>
+        <line id="needle-tmf" x1="55" y1="55" x2="55" y2="14" stroke="#0b0b0b" stroke-width="2" stroke-linecap="round" transform="rotate(2 55 55)"/>
+        <circle cx="55" cy="55" r="4" fill="#0b0b0b"/>
+      </svg>
+      <div class="gauge-score neu" id="g-score-tmf">43</div>
+      <div class="gauge-sub" id="g-sub-tmf">法人合計淨空<br>−46,718口</div>
+    </div>
+    <div class="gauge-card">
+      <div class="gauge-title">選擇權<br>P/C 未平倉比</div>
+      <svg class="gauge-svg" viewBox="0 0 110 60" role="img" aria-label="選擇權PC比量表">
+        <path d="M8,55 A47,47 0 0,1 102,55" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="8" stroke-linecap="round"/>
+        <path d="M8,55 A47,47 0 0,1 102,55" fill="none" stroke="url(#grd)" stroke-width="8" stroke-linecap="round" stroke-dasharray="148" id="g-pc" stroke-dashoffset="95"/>
+        <line id="needle-pc" x1="55" y1="55" x2="55" y2="14" stroke="#0b0b0b" stroke-width="2" stroke-linecap="round" transform="rotate(18 55 55)"/>
+        <circle cx="55" cy="55" r="4" fill="#0b0b0b"/>
+      </svg>
+      <div class="gauge-score bear" id="g-score-pc">36</div>
+      <div class="gauge-sub" id="g-sub-pc">外資賣權偏重<br>→ 市場偏謹慎</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">期貨三大法人未平倉明細</div>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>契約</th>
+            <th>自營商淨額(口)</th>
+            <th>投信淨額(口)</th>
+            <th>外資淨額(口)</th>
+            <th>法人合計(口)</th>
+            <th>散戶推估(口)</th>
+            <th>評分</th>
+            <th>方向</th>
+          </tr>
+        </thead>
+        <tbody id="futures-tbody">
+          <tr>
+            <td>台指期 TX</td>
+            <td class="bull">+3,003</td>
+            <td class="bull">+60,921</td>
+            <td class="bear">−81,051</td>
+            <td class="bear">−17,127</td>
+            <td class="bull">+17,127</td>
+            <td class="bull">65</td>
+            <td class="bull">↑ 偏多</td>
+          </tr>
+          <tr>
+            <td>小台 MTX</td>
+            <td class="bear">−8,098</td>
+            <td class="bull">+19</td>
+            <td class="bull">+1,615</td>
+            <td class="bear">−6,464</td>
+            <td class="bull">+6,464</td>
+            <td class="bull">62</td>
+            <td class="bull">↑ 偏多</td>
+          </tr>
+          <tr>
+            <td>微台 TMF</td>
+            <td class="bear">−49,684</td>
+            <td>0</td>
+            <td class="bull">+2,966</td>
+            <td class="bear">−46,718</td>
+            <td class="bull">+46,718</td>
+            <td class="neu">43</td>
+            <td class="neu">～ 中性</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">選擇權三大法人未平倉（台指選擇權 TXO）</div>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>身份別</th>
+            <th>買權未平倉(口)</th>
+            <th>賣權未平倉(口)</th>
+            <th>買賣差(口)</th>
+            <th>市場含意</th>
+          </tr>
+        </thead>
+        <tbody id="options-tbody">
+          <tr>
+            <td>外資</td>
+            <td class="bull">9,531</td>
+            <td class="bear">23,271</td>
+            <td class="bear">−13,740</td>
+            <td class="bear">偏空（賣權較重）</td>
+          </tr>
+          <tr>
+            <td>自營商</td>
+            <td>16,820</td>
+            <td>31,965</td>
+            <td class="bear">−15,145</td>
+            <td class="bear">偏空避險</td>
+          </tr>
+          <tr>
+            <td>投信</td>
+            <td>1</td>
+            <td>93</td>
+            <td class="bear">−92</td>
+            <td class="neu">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">評分總覽</div>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>指標</th>
+            <th>計算基礎</th>
+            <th>散戶推估部位</th>
+            <th>分數(0–100)</th>
+            <th>訊號</th>
+          </tr>
+        </thead>
+        <tbody id="score-tbody">
+          <tr>
+            <td>台指期 散戶多空比</td>
+            <td>外資主導淨空 −81,051口</td>
+            <td class="bull">+17,127口</td>
+            <td class="bull">65</td>
+            <td class="bull">偏多</td>
+          </tr>
+          <tr>
+            <td>小台 散戶多空比</td>
+            <td>自營商淨空為主</td>
+            <td class="bull">+6,464口</td>
+            <td class="bull">62</td>
+            <td class="bull">偏多</td>
+          </tr>
+          <tr>
+            <td>微台 散戶多空比</td>
+            <td>自營商大幅淨空</td>
+            <td class="bull">+46,718口</td>
+            <td class="neu">43</td>
+            <td class="neu">中性</td>
+          </tr>
+          <tr>
+            <td>選擇權 P/C 比</td>
+            <td>外資賣權未平倉偏重</td>
+            <td class="bear">賣權較多</td>
+            <td class="bear">36</td>
+            <td class="bear">偏空</td>
+          </tr>
+          <tr class="highlight-row">
+            <td>綜合評分</td>
+            <td>期貨60% / 選擇權40% 加權</td>
+            <td>—</td>
+            <td class="bull" id="final-score-td">62</td>
+            <td class="bull" id="final-signal-td">中度偏多</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer" id="footer-note">
+    資料來源：臺灣期貨交易所（TAIFEX）· 散戶多空比計算方式：全市場未平倉 − 三大法人 = 散戶推估，正規化為 0–100 分<br>
+    ≥65 極端偏多（反指標警示） · 35–65 中性區 · ≤35 偏空 · 期貨資料日期：2026/06/25 · 選擇權資料日期：2026/06/03<br>
+    本儀表板僅供參考，不構成投資建議。按「即時更新」取得最新期交所數據。
+  </div>
+</div>
+
+<script>
+const STEPS = [
+  '連線期交所取得期貨數據...',
+  '解析三大法人未平倉資料...',
+  '取得選擇權買賣權分計...',
+  '計算散戶多空比與評分...',
+  '更新儀表板顯示...'
+];
+
+function setLoadingStep(i) {
+  document.getElementById('loading-step').textContent = STEPS[Math.min(i, STEPS.length-1)];
+}
+
+function scoreColor(s) {
+  if (s >= 65) return 'bull';
+  if (s <= 35) return 'bear';
+  return 'neu';
+}
+
+function scoreLabel(s) {
+  if (s >= 72) return '極度偏多 ⚠ 反指標警示';
+  if (s >= 65) return '偏多 — 接近警示區';
+  if (s >= 55) return '中度偏多';
+  if (s >= 45) return '中性偏多';
+  if (s >= 35) return '中性偏空';
+  if (s >= 25) return '偏空';
+  return '極度偏空';
+}
+
+function fmt(n) {
+  if (n === null || n === undefined) return '—';
+  const abs = Math.abs(Math.round(n)).toLocaleString('zh-TW');
+  return (n >= 0 ? '+' : '−') + abs;
+}
+
+function needleAngle(score) {
+  return -90 + (score / 100) * 180;
+}
+
+function updateGauge(id, score) {
+  const offset = 148 - (score / 100) * 148;
+  const el = document.getElementById(id);
+  if (el) el.setAttribute('stroke-dashoffset', offset.toFixed(1));
+  const needle = document.getElementById('needle-' + id.replace('g-',''));
+  if (needle) {
+    const ang = needleAngle(score);
+    needle.setAttribute('transform', `rotate(${ang} 55 55)`);
+  }
+}
+
+function applyData(d) {
+  const tx  = d.tx  || {};
+  const mtx = d.mtx || {};
+  const tmf = d.tmf || {};
+  const opt = d.options || {};
+  const scores = d.scores || {};
+  const overall = scores.overall || 62;
+
+  document.getElementById('date-label').textContent = `資料日期：${d.date || '—'}`;
+  document.getElementById('overall-score').textContent = overall;
+  document.getElementById('score-bar').style.width = overall + '%';
+
+  const sc = scoreColor(overall);
+  const sl = scoreLabel(overall);
+  document.getElementById('score-title').textContent = `散戶綜合情緒：${sl}`;
+  document.getElementById('score-circle').style.borderColor = sc === 'bull' ? 'var(--bull)' : sc === 'bear' ? 'var(--bear)' : 'var(--neutral)';
+  document.getElementById('score-circle').style.background = sc === 'bull' ? 'rgba(192,57,43,0.06)' : sc === 'bear' ? 'rgba(26,140,94,0.06)' : 'transparent';
+  document.getElementById('overall-score').className = 'score-num ' + sc;
+
+  const txS = scores.tx || 65;
+  const mtxS = scores.mtx || 62;
+  const tmfS = scores.tmf || 43;
+  const pcS = scores.pc || 36;
+
+  document.getElementById('g-score-tx').textContent = txS;
+  document.getElementById('g-score-tx').className = 'gauge-score ' + scoreColor(txS);
+  document.getElementById('g-sub-tx').innerHTML = `外資淨額<br>${fmt(tx.foreign)}口`;
+  updateGauge('g-tx', txS);
+
+  document.getElementById('g-score-mtx').textContent = mtxS;
+  document.getElementById('g-score-mtx').className = 'gauge-score ' + scoreColor(mtxS);
+  document.getElementById('g-sub-mtx').innerHTML = `法人合計<br>${fmt(mtx.total)}口`;
+  updateGauge('g-mtx', mtxS);
+
+  document.getElementById('g-score-tmf').textContent = tmfS;
+  document.getElementById('g-score-tmf').className = 'gauge-score ' + scoreColor(tmfS);
+  document.getElementById('g-sub-tmf').innerHTML = `法人合計<br>${fmt(tmf.total)}口`;
+  updateGauge('g-tmf', tmfS);
+
+  document.getElementById('g-score-pc').textContent = pcS;
+  document.getElementById('g-score-pc').className = 'gauge-score ' + scoreColor(pcS);
+  updateGauge('g-pc', pcS);
+
+  document.getElementById('futures-tbody').innerHTML = `
+    <tr>
+      <td>台指期 TX</td>
+      <td class="${tx.dealer>=0?'bull':'bear'}">${fmt(tx.dealer)}</td>
+      <td class="${tx.trust>=0?'bull':'bear'}">${fmt(tx.trust)}</td>
+      <td class="${tx.foreign>=0?'bull':'bear'}">${fmt(tx.foreign)}</td>
+      <td class="${tx.total>=0?'bull':'bear'}">${fmt(tx.total)}</td>
+      <td class="${-tx.total>=0?'bull':'bear'}">${fmt(-tx.total)}</td>
+      <td class="${scoreColor(txS)}">${txS}</td>
+      <td class="${scoreColor(txS)}">${txS>=50?'↑ 偏多':'↓ 偏空'}</td>
+    </tr>
+    <tr>
+      <td>小台 MTX</td>
+      <td class="${mtx.dealer>=0?'bull':'bear'}">${fmt(mtx.dealer)}</td>
+      <td class="${(mtx.trust||0)>=0?'bull':'bear'}">${fmt(mtx.trust||0)}</td>
+      <td class="${mtx.foreign>=0?'bull':'bear'}">${fmt(mtx.foreign)}</td>
+      <td class="${mtx.total>=0?'bull':'bear'}">${fmt(mtx.total)}</td>
+      <td class="${-mtx.total>=0?'bull':'bear'}">${fmt(-mtx.total)}</td>
+      <td class="${scoreColor(mtxS)}">${mtxS}</td>
+      <td class="${scoreColor(mtxS)}">${mtxS>=50?'↑ 偏多':'↓ 偏空'}</td>
+    </tr>
+    <tr>
+      <td>微台 TMF</td>
+      <td class="${tmf.dealer>=0?'bull':'bear'}">${fmt(tmf.dealer)}</td>
+      <td>0</td>
+      <td class="${tmf.foreign>=0?'bull':'bear'}">${fmt(tmf.foreign)}</td>
+      <td class="${tmf.total>=0?'bull':'bear'}">${fmt(tmf.total)}</td>
+      <td class="${-tmf.total>=0?'bull':'bear'}">${fmt(-tmf.total)}</td>
+      <td class="${scoreColor(tmfS)}">${tmfS}</td>
+      <td class="${scoreColor(tmfS)}">${tmfS>=50?'↑ 偏多':'～ 中性'}</td>
+    </tr>
+  `;
+
+  document.getElementById('options-tbody').innerHTML = `
+    <tr>
+      <td>外資</td>
+      <td class="bull">${(opt.foreign_call||9531).toLocaleString()}</td>
+      <td class="bear">${(opt.foreign_put||23271).toLocaleString()}</td>
+      <td class="bear">${fmt((opt.foreign_call||9531)-(opt.foreign_put||23271))}</td>
+      <td class="bear">賣權較重 → 偏空</td>
+    </tr>
+    <tr>
+      <td>自營商</td>
+      <td>${(opt.dealer_call||16820).toLocaleString()}</td>
+      <td>${(opt.dealer_put||31965).toLocaleString()}</td>
+      <td class="bear">${fmt((opt.dealer_call||16820)-(opt.dealer_put||31965))}</td>
+      <td class="bear">偏空避險</td>
+    </tr>
+    <tr>
+      <td>投信</td>
+      <td>${(opt.trust_call||1).toLocaleString()}</td>
+      <td>${(opt.trust_put||93).toLocaleString()}</td>
+      <td class="bear">${fmt((opt.trust_call||1)-(opt.trust_put||93))}</td>
+      <td class="neu">—</td>
+    </tr>
+  `;
+
+  document.getElementById('final-score-td').textContent = overall;
+  document.getElementById('final-score-td').className = scoreColor(overall);
+  document.getElementById('final-signal-td').textContent = sl;
+  document.getElementById('final-signal-td').className = scoreColor(overall);
+
+  document.getElementById('footer-note').innerHTML = `
+    資料來源：臺灣期貨交易所（TAIFEX）· 散戶多空比 = 全市場未平倉 − 三大法人，正規化 0–100 分<br>
+    ≥65 極端偏多（反指標警示）· 35–65 中性區 · ≤35 偏空 · 最後更新：${new Date().toLocaleString('zh-TW')}<br>
+    本儀表板僅供參考，不構成投資建議。
+  `;
+}
+
+async function refreshData() {
+  const btn = document.getElementById('refresh-btn');
+  const overlay = document.getElementById('loading-overlay');
+  const errEl = document.getElementById('api-error');
+  errEl.style.display = 'none';
+  btn.disabled = true;
+  btn.classList.add('spinning');
+  overlay.classList.add('show');
+  setLoadingStep(0);
+
+  const prompt = `你是台灣期貨市場數據分析師。請立即從台灣期交所取得最新三大法人期貨與選擇權未平倉數據，計算散戶籌碼指標，並以純 JSON 格式回傳（不含任何說明文字或 markdown，只有 JSON）。
+
+計算方式（玩股網作法）：
+- 散戶推估淨部位 = -(三大法人合計淨口數)，即法人淨空 → 散戶被動偏多
+- 散戶多空比分數(0-100)：以散戶淨部位除以歷史極值正規化。基準：
+  * 台指期：法人合計淨口數每 ±30,000 口對應分數 ±30 分（基準50）
+  * 小台：每 ±15,000 口對應 ±30 分
+  * 微台：每 ±80,000 口對應 ±30 分
+  * 選擇權：以外資賣權/(買權+賣權)比率換算，>60%得分<40，<40%得分>60
+- 綜合分數 = 台指期×25% + 小台×25% + 微台×10% + 選擇權×40%
+
+期交所最新數據查詢（三大法人區分各期貨契約）：https://www.taifex.com.tw/cht/3/futContractsDateExcel
+選擇權數據：https://www.taifex.com.tw/cht/3/callsAndPutsDateExcel
+
+請回傳如下 JSON 結構，數字為實際整數，勿使用字串：
+{
+  "date": "YYYY/MM/DD",
+  "tx": {"dealer": 整數, "trust": 整數, "foreign": 整數, "total": 整數},
+  "mtx": {"dealer": 整數, "trust": 整數, "foreign": 整數, "total": 整數},
+  "tmf": {"dealer": 整數, "trust": 整數, "foreign": 整數, "total": 整數},
+  "options": {
+    "foreign_call": 整數, "foreign_put": 整數,
+    "dealer_call": 整數, "dealer_put": 整數,
+    "trust_call": 整數, "trust_put": 整數,
+    "opt_date": "YYYY/MM/DD"
+  },
+  "scores": {"tx": 整數, "mtx": 整數, "tmf": 整數, "pc": 整數, "overall": 整數}
+}`;
+
+  try {
+    setLoadingStep(1);
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    setLoadingStep(2);
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error?.message || `HTTP ${res.status}`);
+
+    setLoadingStep(3);
+    const fullText = (data.content || [])
+      .filter(b => b.type === 'text')
+      .map(b => b.text)
+      .join('');
+
+    const jsonMatch = fullText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('無法解析 API 回傳的 JSON 格式');
+
+    const parsed = JSON.parse(jsonMatch[0]);
+    setLoadingStep(4);
+    applyData(parsed);
+
+  } catch (e) {
+    errEl.textContent = `更新失敗：${e.message}。顯示最近快取數據。`;
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove('spinning');
+    overlay.classList.remove('show');
+  }
+}
+
+document.getElementById('date-label').textContent = '資料日期：2026/06/25（期交所）';
+</script>
+</body>
+</html>
