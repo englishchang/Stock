@@ -2,18 +2,19 @@ name: 每日更新期交所數據
 
 on:
   schedule:
-    # 週一至週五 台北時間 16:30（UTC 08:30）盤後自動執行
-    - cron: "30 8 * * 1-5"
-  workflow_dispatch:   # 允許手動觸發
+    # 週一至週五 台北時間 17:00（UTC 09:00）
+    - cron: "0 9 * * 1-5"
+  workflow_dispatch:
 
 permissions:
-  contents: write      # 寫入 data.json
-  pages: write         # 部署 GitHub Pages
+  contents: write
+  pages: write
   id-token: write
 
 jobs:
   fetch-and-deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
@@ -27,8 +28,20 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: 抓取期交所數據
+      - name: 安裝 wget
+        run: sudo apt-get install -y wget
+
+      - name: 抓取期交所數據（最多重試 3 次）
+        id: fetch
         run: python scripts/fetch_taifex.py
+        continue-on-error: true
+
+      - name: 若失敗等待後再試
+        if: steps.fetch.outcome == 'failure'
+        run: |
+          echo "第一次失敗，等待 30 秒後重試..."
+          sleep 30
+          python scripts/fetch_taifex.py
 
       - name: 顯示抓到的數據
         run: cat data.json
