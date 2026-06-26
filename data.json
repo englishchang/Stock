@@ -1,6 +1,6 @@
 {
   "date": "2026/06/25",
-  "fetched_at": "2026/06/25 16:30",
+  "fetched_at": "2026/06/26 15:49",
   "tx": {
     "dealer": 3003,
     "trust": 60921,
@@ -36,7 +36,7 @@
     "overall": 62
   },
   "crypto": {
-    "fetched_at": "2026/06/26 15:47",
+    "fetched_at": "2026/06/26 15:49",
     "fear_greed": {
       "value": 13,
       "label": "Extreme Fear"
@@ -45,9 +45,9 @@
     "data": {
       "BTCUSDT": {
         "symbol": "BTCUSDT",
-        "price": 60475,
-        "change_24h": -2.11,
-        "change_7d": -3.78,
+        "price": 60451,
+        "change_24h": -2.15,
+        "change_7d": -3.8,
         "fear_greed": {
           "value": 13,
           "label": "Extreme Fear"
@@ -62,9 +62,9 @@
       },
       "DOGEUSDT": {
         "symbol": "DOGEUSDT",
-        "price": 0.074948,
-        "change_24h": -2.81,
-        "change_7d": -9.09,
+        "price": 0.074836,
+        "change_24h": -2.95,
+        "change_7d": -9.26,
         "fear_greed": {
           "value": 13,
           "label": "Extreme Fear"
@@ -78,5 +78,6 @@
         }
       }
     }
-  }
+  },
+  "fetch_error": "所有期貨數據為 0，疑似解析失敗"
 }
