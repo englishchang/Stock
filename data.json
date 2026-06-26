@@ -1,6 +1,6 @@
 {
   "date": "2026/06/25",
-  "fetched_at": "2026/06/26 15:35",
+  "fetched_at": "2026/06/25 16:30",
   "tx": {
     "dealer": 3003,
     "trust": 60921,
@@ -36,12 +36,11 @@
     "overall": 62
   },
   "crypto": {
-    "fetched_at": "2026/06/26 15:35",
+    "fetched_at": "2026/06/26 15:14",
     "period": "4h",
     "data": {
       "BTCUSDT": null,
       "DOGEUSDT": null
     }
-  },
-  "fetch_error": "所有期貨數據為 0，疑似解析失敗"
+  }
 }
