@@ -1,39 +1,39 @@
 {
-  "date": "2026/06/25",
-  "fetched_at": "2026/06/26 23:46",
+  "date": "2026/06/26",
+  "fetched_at": "2026/06/26 23:54",
   "tx": {
-    "dealer": 3003,
-    "trust": 60921,
-    "foreign": -81051,
-    "total": -17127
+    "dealer": 4641,
+    "trust": 61247,
+    "foreign": -76391,
+    "total": -10503
   },
   "mtx": {
-    "dealer": -8098,
-    "trust": 19,
-    "foreign": 1615,
-    "total": -6464
+    "dealer": -6807,
+    "trust": 13,
+    "foreign": -268,
+    "total": -7062
   },
   "tmf": {
-    "dealer": -49684,
+    "dealer": -64948,
     "trust": 0,
-    "foreign": 2966,
-    "total": -46718
+    "foreign": 2709,
+    "total": -62239
   },
   "options": {
-    "foreign_call": 9531,
-    "foreign_put": 23271,
-    "dealer_call": 16820,
-    "dealer_put": 31965,
-    "trust_call": 1,
-    "trust_put": 93,
-    "opt_date": "2026/06/03"
+    "foreign_call": 0,
+    "foreign_put": 0,
+    "dealer_call": 12,
+    "dealer_put": 120,
+    "trust_call": 0,
+    "trust_put": 0,
+    "opt_date": "2026/06/26"
   },
   "scores": {
-    "tx": 65,
-    "mtx": 62,
-    "tmf": 43,
-    "pc": 36,
-    "overall": 62
+    "tx": 55,
+    "mtx": 57,
+    "tmf": 62,
+    "pc": 50,
+    "overall": 54
   },
   "crypto": {
     "fetched_at": "2026/06/26 23:28",
@@ -78,6 +78,5 @@
         }
       }
     }
-  },
-  "fetch_error": "所有期貨數據解析為 0"
+  }
 }
