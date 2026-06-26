@@ -3,7 +3,7 @@ name: 每日更新期交所數據
 on:
   schedule:
     # 週一至週五 台北時間 16:30（UTC 08:30）盤後自動執行
-    - cron: "30 8 * * 1-5"
+    - cron: "0 9 * * 1-5"
   workflow_dispatch:   # 允許手動觸發
 
 permissions:
