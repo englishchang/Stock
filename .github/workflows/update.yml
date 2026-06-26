@@ -2,9 +2,9 @@ name: 更新期交所 + 加密貨幣數據
 
 on:
   schedule:
-    # ── 加密貨幣：每4小時（UTC 0/4/8/12/16/20點）
+    # 加密貨幣：每4小時（UTC 0/4/8/12/16/20點）
     - cron: "0 0,4,8,12,16,20 * * *"
-    # ── 台股期貨：週一至週五 台北時間 17:00（UTC 09:00）
+    # 台股期貨：週一至週五 台北時間 17:00（UTC 09:00）
     - cron: "0 9 * * 1-5"
   workflow_dispatch:
     inputs:
@@ -22,6 +22,10 @@ permissions:
   contents: write
   pages: write
   id-token: write
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
 
 jobs:
   fetch-and-deploy:
@@ -43,21 +47,20 @@ jobs:
       - name: 安裝工具
         run: sudo apt-get install -y wget
 
-      # ── 加密貨幣（每次都跑，4小時一次）──
+      # 加密貨幣（每次都跑）
       - name: 抓取 BTC / DOGE 數據
         if: github.event.inputs.mode != 'taifex_only'
         run: python scripts/fetch_crypto.py
 
-      # ── 台股期貨（只在 09:00 UTC 或手動觸發時跑）──
+      # 台股期貨（只在 09:00 UTC 週一至週五，或手動指定時跑）
       - name: 判斷是否需要抓台股期貨
         id: check_taifex
         run: |
           HOUR=$(date -u +%H)
-          MINUTE=$(date -u +%M)
           WDAY=$(date -u +%u)
           MODE="${{ github.event.inputs.mode }}"
-          if [[ "$MODE" == "taifex_only" ]] || [[ "$MODE" == "all" ]] || \
-             ([[ "$HOUR" == "09" ]] && [[ "$WDAY" -le 5 ]]); then
+          if [[ "$MODE" == "taifex_only" || "$MODE" == "all" || \
+               ("$HOUR" == "09" && "$WDAY" -le 5) ]]; then
             echo "run=true" >> $GITHUB_OUTPUT
           else
             echo "run=false" >> $GITHUB_OUTPUT
@@ -77,16 +80,17 @@ jobs:
           python scripts/fetch_taifex.py
 
       - name: 顯示最新數據
-        run: |
-          echo "=== data.json ==="
-          cat data.json
+        run: cat data.json
 
       - name: Commit & Push data.json
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data.json
-          git diff --cached --quiet || git commit -m "chore: 自動更新數據 $(date +'%Y/%m/%d %H:%M UTC') [skip ci]"
+          git diff --cached --quiet && echo "無變更，跳過 commit" && exit 0
+          git commit -m "chore: 自動更新數據 $(date +'%Y/%m/%d %H:%M UTC') [skip ci]"
+          # pull --rebase 防止並發衝突
+          git pull --rebase origin main
           git push
 
       - name: Setup Pages
