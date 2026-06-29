@@ -1,58 +1,58 @@
 {
-  "date": "2026/06/26",
-  "fetched_at": "2026/06/26 23:58",
+  "date": "2026/06/29",
+  "fetched_at": "2026/06/29 21:05",
   "tx": {
-    "dealer": 4641,
-    "trust": 61247,
-    "foreign": -76391,
-    "total": -10503
+    "dealer": 2415,
+    "trust": 62962,
+    "foreign": -76627,
+    "total": -11250
   },
   "mtx": {
-    "dealer": -6807,
-    "trust": 13,
-    "foreign": -268,
-    "total": -7062
+    "dealer": -5813,
+    "trust": 15,
+    "foreign": 4532,
+    "total": -1266
   },
   "tmf": {
-    "dealer": -64948,
+    "dealer": -48972,
     "trust": 0,
-    "foreign": 2709,
-    "total": -62239
+    "foreign": 8528,
+    "total": -40444
   },
   "options": {
     "foreign_call": 0,
     "foreign_put": 0,
     "dealer_call": 12,
-    "dealer_put": 120,
+    "dealer_put": 92,
     "trust_call": 0,
     "trust_put": 0,
-    "opt_date": "2026/06/26"
+    "opt_date": "2026/06/29"
   },
   "scores": {
-    "tx": 55,
-    "mtx": 57,
-    "tmf": 62,
+    "tx": 56,
+    "mtx": 51,
+    "tmf": 58,
     "pc": 50,
-    "overall": 54
+    "overall": 53
   },
   "crypto": {
-    "fetched_at": "2026/06/29 16:58",
+    "fetched_at": "2026/06/29 21:05",
     "fear_greed": {
       "value": 12,
       "label": "Extreme Fear"
     },
-    "btc_dominance": 55.76,
+    "btc_dominance": 55.74,
     "data": {
       "BTCUSDT": {
         "symbol": "BTCUSDT",
-        "price": 59763,
-        "change_24h": -0.89,
-        "change_7d": -6.81,
+        "price": 60014,
+        "change_24h": 0.12,
+        "change_7d": -7.09,
         "fear_greed": {
           "value": 12,
           "label": "Extreme Fear"
         },
-        "btc_dominance": 55.76,
+        "btc_dominance": 55.74,
         "scores": {
           "fear_greed": 12,
           "momentum": 40,
@@ -62,14 +62,14 @@
       },
       "DOGEUSDT": {
         "symbol": "DOGEUSDT",
-        "price": 0.072517,
-        "change_24h": -1.98,
-        "change_7d": -12.69,
+        "price": 0.072981,
+        "change_24h": -0.69,
+        "change_7d": -13.59,
         "fear_greed": {
           "value": 12,
           "label": "Extreme Fear"
         },
-        "btc_dominance": 55.76,
+        "btc_dominance": 55.74,
         "scores": {
           "fear_greed": 12,
           "momentum": 32,
