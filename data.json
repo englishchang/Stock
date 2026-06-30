@@ -1,6 +1,6 @@
 {
   "date": "2026/06/30",
-  "fetched_at": "2026/06/30 19:32",
+  "fetched_at": "2026/06/30 19:38",
   "tx": {
     "dealer": 1571,
     "trust": 66623,
@@ -36,7 +36,7 @@
     "overall": 53
   },
   "crypto": {
-    "fetched_at": "2026/06/30 18:56",
+    "fetched_at": "2026/06/30 19:37",
     "fear_greed": {
       "value": 15,
       "label": "Extreme Fear"
@@ -45,9 +45,9 @@
     "data": {
       "BTCUSDT": {
         "symbol": "BTCUSDT",
-        "price": 59242,
-        "change_24h": -1.27,
-        "change_7d": -4.91,
+        "price": 59083,
+        "change_24h": -1.23,
+        "change_7d": -5.12,
         "fear_greed": {
           "value": 15,
           "label": "Extreme Fear"
@@ -62,9 +62,9 @@
       },
       "DOGEUSDT": {
         "symbol": "DOGEUSDT",
-        "price": 0.072413,
-        "change_24h": -0.56,
-        "change_7d": -8.32,
+        "price": 0.071996,
+        "change_24h": -0.99,
+        "change_7d": -8.79,
         "fear_greed": {
           "value": 15,
           "label": "Extreme Fear"
