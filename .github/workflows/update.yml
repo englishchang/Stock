@@ -2,10 +2,9 @@ name: 更新期交所 + 加密貨幣數據
 
 on:
   schedule:
-    # 加密貨幣：每4小時（UTC 0/4/8/12/16/20點）
+    # 唯一排程：每4小時觸發（UTC 0/4/8/12/16/20點）
+    # 加密貨幣每次都更新；台股期貨用時間判斷在 16~17點台北時間範圍內執行
     - cron: "0 0,4,8,12,16,20 * * *"
-    # 台股期貨：週一至週五 台北時間 17:00（UTC 09:00）
-    - cron: "0 9 * * 1-5"
   workflow_dispatch:
     inputs:
       mode:
@@ -47,21 +46,30 @@ jobs:
       - name: 安裝工具
         run: sudo apt-get install -y wget
 
-      # ── 加密貨幣：不是台股專屬排程時都執行 ──
+      # ── 加密貨幣：每次排程都跑 ──
       - name: 抓取 BTC / DOGE 數據
-        if: >
-          github.event.inputs.mode != 'taifex_only' &&
-          (github.event_name == 'workflow_dispatch' ||
-           github.event.schedule == '0 0,4,8,12,16,20 * * *' ||
-           github.event.schedule == '0 9 * * 1-5')
+        if: github.event.inputs.mode != 'taifex_only'
         run: python scripts/fetch_crypto.py
 
-      # ── 台股期貨：只在 UTC 09:00 排程 或 手動指定時執行 ──
+      # ── 判斷台股期貨是否該跑（UTC 8~9點之間，且為週一至週五）──
+      - name: 判斷是否需要抓台股期貨
+        id: check_taifex
+        run: |
+          HOUR=$(date -u +%H)
+          WDAY=$(date -u +%u)
+          MODE="${{ github.event.inputs.mode }}"
+          echo "目前 UTC 時間：$(date -u), HOUR=$HOUR WDAY=$WDAY"
+          if [[ "$MODE" == "taifex_only" || "$MODE" == "all" ]]; then
+            echo "run=true" >> $GITHUB_OUTPUT
+          elif [[ "$HOUR" == "08" && "$WDAY" -le 5 ]]; then
+            # UTC 08:00 = 台北 16:00（最接近 16:30 收盤後的排程點）
+            echo "run=true" >> $GITHUB_OUTPUT
+          else
+            echo "run=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: 抓取期交所數據（含重試）
-        if: >
-          github.event.inputs.mode == 'taifex_only' ||
-          github.event.inputs.mode == 'all' ||
-          github.event.schedule == '0 9 * * 1-5'
+        if: steps.check_taifex.outputs.run == 'true'
         id: fetch_taifex
         run: python scripts/fetch_taifex.py
         continue-on-error: true
