@@ -1,37 +1,37 @@
 {
-  "date": "2026/06/29",
-  "fetched_at": "2026/06/29 21:05",
+  "date": "2026/06/30",
+  "fetched_at": "2026/06/30 19:32",
   "tx": {
-    "dealer": 2415,
-    "trust": 62962,
-    "foreign": -76627,
-    "total": -11250
+    "dealer": 1571,
+    "trust": 66623,
+    "foreign": -83063,
+    "total": -14869
   },
   "mtx": {
-    "dealer": -5813,
-    "trust": 15,
-    "foreign": 4532,
-    "total": -1266
+    "dealer": -5661,
+    "trust": 27,
+    "foreign": 2785,
+    "total": -2849
   },
   "tmf": {
-    "dealer": -48972,
+    "dealer": -39479,
     "trust": 0,
-    "foreign": 8528,
-    "total": -40444
+    "foreign": 10258,
+    "total": -29221
   },
   "options": {
     "foreign_call": 0,
     "foreign_put": 0,
-    "dealer_call": 12,
-    "dealer_put": 92,
+    "dealer_call": 13,
+    "dealer_put": 95,
     "trust_call": 0,
     "trust_put": 0,
-    "opt_date": "2026/06/29"
+    "opt_date": "2026/06/30"
   },
   "scores": {
-    "tx": 56,
-    "mtx": 51,
-    "tmf": 58,
+    "tx": 57,
+    "mtx": 53,
+    "tmf": 55,
     "pc": 50,
     "overall": 53
   },
