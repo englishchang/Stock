@@ -1,23 +1,23 @@
 {
-  "date": "2026/07/01",
-  "fetched_at": "2026/07/01 16:12",
+  "date": "2026/07/02",
+  "fetched_at": "2026/07/03 08:24",
   "tx": {
-    "dealer": 1592,
-    "trust": 67194,
-    "foreign": -84168,
-    "total": -15382
+    "dealer": 3683,
+    "trust": 66410,
+    "foreign": -84487,
+    "total": -14394
   },
   "mtx": {
-    "dealer": -6678,
+    "dealer": -8028,
     "trust": 33,
-    "foreign": 3132,
-    "total": -3513
+    "foreign": 418,
+    "total": -7577
   },
   "tmf": {
-    "dealer": -40245,
+    "dealer": -54568,
     "trust": 0,
-    "foreign": 9993,
-    "total": -30252
+    "foreign": 9645,
+    "total": -44923
   },
   "options": {
     "foreign_call": 0,
@@ -26,14 +26,14 @@
     "dealer_put": 101,
     "trust_call": 0,
     "trust_put": 0,
-    "opt_date": "2026/07/01"
+    "opt_date": "2026/07/02"
   },
   "scores": {
-    "tx": 58,
-    "mtx": 54,
-    "tmf": 56,
+    "tx": 57,
+    "mtx": 58,
+    "tmf": 58,
     "pc": 50,
-    "overall": 54
+    "overall": 55
   },
   "crypto": {
     "fetched_at": "2026/07/03 05:05",
