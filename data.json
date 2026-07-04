@@ -36,23 +36,23 @@
     "overall": 53
   },
   "crypto": {
-    "fetched_at": "2026/07/04 18:08",
+    "fetched_at": "2026/07/04 21:22",
     "fear_greed": {
       "value": 22,
       "label": "Extreme Fear"
     },
-    "btc_dominance": 55.62,
+    "btc_dominance": 55.61,
     "data": {
       "BTCUSDT": {
         "symbol": "BTCUSDT",
-        "price": 62418,
-        "change_24h": 1.26,
-        "change_7d": 3.47,
+        "price": 62637,
+        "change_24h": 1.08,
+        "change_7d": 3.92,
         "fear_greed": {
           "value": 22,
           "label": "Extreme Fear"
         },
-        "btc_dominance": 55.62,
+        "btc_dominance": 55.61,
         "scores": {
           "fear_greed": 22,
           "momentum": 55,
@@ -62,14 +62,14 @@
       },
       "DOGEUSDT": {
         "symbol": "DOGEUSDT",
-        "price": 0.076793,
-        "change_24h": 2.5,
-        "change_7d": 1.77,
+        "price": 0.077111,
+        "change_24h": 1.51,
+        "change_7d": 2.16,
         "fear_greed": {
           "value": 22,
           "label": "Extreme Fear"
         },
-        "btc_dominance": 55.62,
+        "btc_dominance": 55.61,
         "scores": {
           "fear_greed": 22,
           "momentum": 50,
