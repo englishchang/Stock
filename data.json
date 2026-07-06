@@ -1,23 +1,23 @@
 {
-  "date": "2026/07/03",
-  "fetched_at": "2026/07/03 17:20",
+  "date": "2026/07/06",
+  "fetched_at": "2026/07/06 16:19",
   "tx": {
-    "dealer": 3071,
-    "trust": 67213,
-    "foreign": -81052,
-    "total": -10768
+    "dealer": 2670,
+    "trust": 67254,
+    "foreign": -80087,
+    "total": -10163
   },
   "mtx": {
-    "dealer": -7909,
+    "dealer": -7110,
     "trust": 34,
-    "foreign": 2566,
-    "total": -5309
+    "foreign": 1903,
+    "total": -5173
   },
   "tmf": {
-    "dealer": -47178,
+    "dealer": -47454,
     "trust": 0,
-    "foreign": 16207,
-    "total": -30971
+    "foreign": 14666,
+    "total": -32788
   },
   "options": {
     "foreign_call": 0,
@@ -26,7 +26,7 @@
     "dealer_put": 120,
     "trust_call": 0,
     "trust_put": 0,
-    "opt_date": "2026/07/03"
+    "opt_date": "2026/07/06"
   },
   "scores": {
     "tx": 55,
@@ -36,23 +36,23 @@
     "overall": 53
   },
   "crypto": {
-    "fetched_at": "2026/07/06 11:25",
+    "fetched_at": "2026/07/06 16:19",
     "fear_greed": {
       "value": 24,
       "label": "Extreme Fear"
     },
-    "btc_dominance": 55.76,
+    "btc_dominance": 55.74,
     "data": {
       "BTCUSDT": {
         "symbol": "BTCUSDT",
-        "price": 63213,
-        "change_24h": 0.95,
-        "change_7d": 6.45,
+        "price": 62978,
+        "change_24h": 0.08,
+        "change_7d": 4.97,
         "fear_greed": {
           "value": 24,
           "label": "Extreme Fear"
         },
-        "btc_dominance": 55.76,
+        "btc_dominance": 55.74,
         "scores": {
           "fear_greed": 24,
           "momentum": 55,
@@ -62,14 +62,14 @@
       },
       "DOGEUSDT": {
         "symbol": "DOGEUSDT",
-        "price": 0.077356,
-        "change_24h": 1.73,
-        "change_7d": 6.26,
+        "price": 0.076896,
+        "change_24h": 1.15,
+        "change_7d": 5.67,
         "fear_greed": {
           "value": 24,
           "label": "Extreme Fear"
         },
-        "btc_dominance": 55.76,
+        "btc_dominance": 55.74,
         "scores": {
           "fear_greed": 24,
           "momentum": 55,
