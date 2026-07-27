@@ -2,8 +2,6 @@ name: 更新期交所 + 加密貨幣數據
 
 on:
   schedule:
-    # 唯一排程：每4小時觸發（UTC 0/4/8/12/16/20點）
-    # 加密貨幣每次都更新；台股期貨用時間判斷在 16~17點台北時間範圍內執行
     - cron: "0 0,4,8,12,16,20 * * *"
   workflow_dispatch:
     inputs:
@@ -35,8 +33,11 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
 
     steps:
-      - name: Checkout
+      - name: Checkout（取最新）
         uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -46,23 +47,20 @@ jobs:
       - name: 安裝工具
         run: sudo apt-get install -y wget
 
-      # ── 加密貨幣：每次排程都跑 ──
       - name: 抓取 BTC / DOGE 數據
         if: github.event.inputs.mode != 'taifex_only'
         run: python scripts/fetch_crypto.py
 
-      # ── 判斷台股期貨是否該跑（UTC 8~9點之間，且為週一至週五）──
       - name: 判斷是否需要抓台股期貨
         id: check_taifex
         run: |
           HOUR=$(date -u +%H)
           WDAY=$(date -u +%u)
           MODE="${{ github.event.inputs.mode }}"
-          echo "目前 UTC 時間：$(date -u), HOUR=$HOUR WDAY=$WDAY"
+          echo "UTC: $(date -u) HOUR=$HOUR WDAY=$WDAY"
           if [[ "$MODE" == "taifex_only" || "$MODE" == "all" ]]; then
             echo "run=true" >> $GITHUB_OUTPUT
           elif [[ "$HOUR" == "08" && "$WDAY" -le 5 ]]; then
-            # UTC 08:00 = 台北 16:00（最接近 16:30 收盤後的排程點）
             echo "run=true" >> $GITHUB_OUTPUT
           else
             echo "run=false" >> $GITHUB_OUTPUT
@@ -77,22 +75,40 @@ jobs:
       - name: 若失敗等待後重試
         if: steps.fetch_taifex.outcome == 'failure'
         run: |
-          echo "30 秒後重試..."
           sleep 30
           python scripts/fetch_taifex.py
 
       - name: 顯示最新數據
         run: cat data.json
 
-      - name: Commit & Push data.json
+      - name: Commit & Push（自動解衝突）
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data.json
-          git diff --cached --quiet && echo "無變更，跳過 commit" && exit 0
+          git diff --cached --quiet && echo "無變更，跳過" && exit 0
           git commit -m "chore: 自動更新數據 $(date +'%Y/%m/%d %H:%M UTC') [skip ci]"
-          git pull --rebase origin main
-          git push
+          # 最多重試 5 次：拉最新 → ours 策略合併 data.json → push
+          for i in 1 2 3 4 5; do
+            echo "=== Push 嘗試 $i ==="
+            if git push origin main; then
+              echo "✅ Push 成功"
+              exit 0
+            fi
+            echo "Push 失敗，解決衝突後重試..."
+            git fetch origin main
+            # 取出目前最新抓到的 data.json 內容備份
+            cp data.json /tmp/data_new.json
+            # 合併遠端（保留本地 data.json）
+            git merge -X ours origin/main --no-edit || true
+            # 強制用新數據覆蓋
+            cp /tmp/data_new.json data.json
+            git add data.json
+            git diff --cached --quiet || git commit -m "chore: 合併衝突後更新 $(date +'%Y/%m/%d %H:%M UTC') [skip ci]"
+            sleep $((i*2))
+          done
+          echo "❌ 推送失敗超過 5 次"
+          exit 1
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
