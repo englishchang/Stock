@@ -68,4 +68,50 @@ jobs:
 
       - name: 抓取期交所數據（含重試）
         if: steps.check_taifex.outputs.run == 'true'
-        id:
+        id: fetch_taifex
+        run: python scripts/fetch_taifex.py
+        continue-on-error: true
+
+      - name: 若失敗等待後重試
+        if: steps.fetch_taifex.outcome == 'failure'
+        run: |
+          sleep 30
+          python scripts/fetch_taifex.py
+
+      - name: 顯示最新數據
+        run: cat data.json
+
+      - name: Commit & Push data.json
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data.json
+          git diff --cached --quiet && echo "無變更，跳過" && exit 0
+          git commit -m "chore: 自動更新數據 $(date +'%Y/%m/%d %H:%M UTC') [skip ci]"
+          for i in 1 2 3 4 5; do
+            echo "=== Push 嘗試 $i ==="
+            if git push origin main; then
+              echo "Push 成功"
+              exit 0
+            fi
+            git fetch origin main
+            cp data.json /tmp/data_new.json
+            git merge -X ours origin/main --no-edit || true
+            cp /tmp/data_new.json data.json
+            git add data.json
+            git diff --cached --quiet || git commit -m "chore: 合併後更新 $(date +'%Y/%m/%d %H:%M UTC') [skip ci]"
+            sleep $((i*2))
+          done
+          exit 1
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "."
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
