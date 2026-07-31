@@ -1,58 +1,58 @@
 {
-  "date": "2026/07/27",
-  "fetched_at": "2026/07/31 14:47",
+  "date": "2026/07/31",
+  "fetched_at": "2026/07/31 14:55",
   "tx": {
-    "dealer": 1891,
-    "trust": 74111,
-    "foreign": -78699,
-    "total": -2697
+    "dealer": -2377,
+    "trust": 85325,
+    "foreign": -82515,
+    "total": 433
   },
   "mtx": {
-    "dealer": -9473,
-    "trust": 28,
-    "foreign": -1176,
-    "total": -10621
+    "dealer": -6240,
+    "trust": 31,
+    "foreign": -1178,
+    "total": -7387
   },
   "tmf": {
-    "dealer": -44808,
+    "dealer": -26562,
     "trust": 0,
-    "foreign": 665,
-    "total": -44143
+    "foreign": 7771,
+    "total": -18791
   },
   "options": {
     "foreign_call": 0,
     "foreign_put": 0,
-    "dealer_call": 73,
-    "dealer_put": 94,
+    "dealer_call": 121,
+    "dealer_put": 33,
     "trust_call": 0,
     "trust_put": 0,
-    "opt_date": "2026/07/27"
+    "opt_date": "2026/07/31"
   },
   "scores": {
-    "tx": 51,
-    "mtx": 61,
-    "tmf": 58,
+    "tx": 50,
+    "mtx": 57,
+    "tmf": 54,
     "pc": 50,
-    "overall": 54
+    "overall": 52
   },
   "crypto": {
-    "fetched_at": "2026/07/31 14:47",
+    "fetched_at": "2026/07/31 14:55",
     "fear_greed": {
       "value": 25,
       "label": "Extreme Fear"
     },
-    "btc_dominance": 56.51,
+    "btc_dominance": 56.48,
     "data": {
       "BTCUSDT": {
         "symbol": "BTCUSDT",
-        "price": 64179,
+        "price": 64203,
         "change_24h": 0.45,
-        "change_7d": -1.54,
+        "change_7d": -1.6,
         "fear_greed": {
           "value": 25,
           "label": "Extreme Fear"
         },
-        "btc_dominance": 56.51,
+        "btc_dominance": 56.48,
         "scores": {
           "fear_greed": 25,
           "momentum": 50,
@@ -62,14 +62,14 @@
       },
       "DOGEUSDT": {
         "symbol": "DOGEUSDT",
-        "price": 0.069994,
-        "change_24h": 0.15,
-        "change_7d": 1.27,
+        "price": 0.070048,
+        "change_24h": 0.25,
+        "change_7d": 1.5,
         "fear_greed": {
           "value": 25,
           "label": "Extreme Fear"
         },
-        "btc_dominance": 56.51,
+        "btc_dominance": 56.48,
         "scores": {
           "fear_greed": 25,
           "momentum": 50,
@@ -78,6 +78,5 @@
         }
       }
     }
-  },
-  "fetch_error": "所有期貨數據解析為 0"
+  }
 }
