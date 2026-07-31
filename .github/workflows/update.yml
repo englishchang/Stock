@@ -47,17 +47,19 @@ jobs:
       - name: 安裝工具
         run: sudo apt-get install -y wget
 
+      # ── 加密貨幣：每次都跑 ──
       - name: 抓取 BTC / DOGE 數據
         if: github.event.inputs.mode != 'taifex_only'
         run: python scripts/fetch_crypto.py
 
+      # ── 台股期貨：每天 UTC 08:00（台北 16:00）週一至週五 ──
       - name: 判斷是否需要抓台股期貨
         id: check_taifex
         run: |
           HOUR=$(date -u +%H)
           WDAY=$(date -u +%u)
           MODE="${{ github.event.inputs.mode }}"
-          echo "UTC: $(date -u) HOUR=$HOUR WDAY=$WDAY"
+          echo "UTC: $(date -u)  HOUR=$HOUR  WDAY=$WDAY  MODE=$MODE"
           if [[ "$MODE" == "taifex_only" || "$MODE" == "all" ]]; then
             echo "run=true" >> $GITHUB_OUTPUT
           elif [[ "$HOUR" == "08" && "$WDAY" -le 5 ]]; then
@@ -66,13 +68,13 @@ jobs:
             echo "run=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: 抓取期交所數據（含重試）
+      - name: 抓取期交所數據
         if: steps.check_taifex.outputs.run == 'true'
         id: fetch_taifex
         run: python scripts/fetch_taifex.py
         continue-on-error: true
 
-      - name: 若失敗等待後重試
+      - name: 若失敗 30 秒後重試
         if: steps.fetch_taifex.outcome == 'failure'
         run: |
           sleep 30
@@ -81,6 +83,7 @@ jobs:
       - name: 顯示最新數據
         run: cat data.json
 
+      # ── Push：自動解決 data.json 衝突 ──
       - name: Commit & Push data.json
         run: |
           git config user.name  "github-actions[bot]"
@@ -89,19 +92,22 @@ jobs:
           git diff --cached --quiet && echo "無變更，跳過" && exit 0
           git commit -m "chore: 自動更新數據 $(date +'%Y/%m/%d %H:%M UTC') [skip ci]"
           for i in 1 2 3 4 5; do
-            echo "=== Push 嘗試 $i ==="
+            echo "=== Push 嘗試 $i/5 ==="
             if git push origin main; then
-              echo "Push 成功"
+              echo "✅ Push 成功"
               exit 0
             fi
+            echo "衝突，自動解決..."
+            cp data.json /tmp/data_latest.json
             git fetch origin main
-            cp data.json /tmp/data_new.json
-            git merge -X ours origin/main --no-edit || true
-            cp /tmp/data_new.json data.json
+            git merge -X ours origin/main --no-edit 2>/dev/null || true
+            cp /tmp/data_latest.json data.json
             git add data.json
-            git diff --cached --quiet || git commit -m "chore: 合併後更新 $(date +'%Y/%m/%d %H:%M UTC') [skip ci]"
-            sleep $((i*2))
+            git diff --cached --quiet || \
+              git commit -m "chore: 合併後更新 $(date +'%Y/%m/%d %H:%M UTC') [skip ci]"
+            sleep $((i * 3))
           done
+          echo "❌ Push 失敗超過 5 次"
           exit 1
 
       - name: Setup Pages
