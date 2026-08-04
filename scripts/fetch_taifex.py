@@ -242,6 +242,12 @@ def main():
     scores = calc_scores(contracts["tx"], contracts["mtx"], contracts["tmf"], opt)
     print(f"📊 評分：{scores}", flush=True)
 
+    # 大盤指數
+    print("📡 抓取加權指數...", flush=True)
+    taiex = fetch_taiex_price()
+    if taiex:
+        print(f"✅ 加權指數：{taiex['close']:,.2f}（{taiex['change']:+.2f}）", flush=True)
+
     existing = load_existing() or {}
     output = {
         "date":       date,
@@ -252,6 +258,8 @@ def main():
         "options":    opt,
         "scores":     scores,
     }
+    if taiex:
+        output["taiex"] = taiex
     if "crypto" in existing:
         output["crypto"] = existing["crypto"]
 
@@ -262,3 +270,35 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+def fetch_taiex_price():
+    """從 Yahoo Finance 抓加權指數收盤價"""
+    import urllib.request, json
+    url = "https://query1.finance.yahoo.com/v8/finance/chart/%5ETWII?interval=1d&range=2d"
+    headers = {
+        "User-Agent": "Mozilla/5.0",
+        "Accept": "application/json",
+    }
+    try:
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req, timeout=15) as r:
+            d = json.loads(r.read().decode())
+        result = d["chart"]["result"][0]
+        meta = result["meta"]
+        close = meta.get("regularMarketPrice", 0)
+        prev  = meta.get("chartPreviousClose", close)
+        change = round(close - prev, 2)
+        change_pct = round((change / prev) * 100, 2) if prev else 0
+        import datetime, time
+        ts = meta.get("regularMarketTime", int(time.time()))
+        dt = datetime.datetime.fromtimestamp(ts, tz=timezone(timedelta(hours=8)))
+        return {
+            "close":      round(close, 2),
+            "change":     change,
+            "change_pct": change_pct,
+            "date":       dt.strftime("%Y/%m/%d"),
+        }
+    except Exception as e:
+        print(f"   ⚠️  加權指數抓取失敗：{e}", flush=True)
+        return None
