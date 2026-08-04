@@ -1,44 +1,389 @@
-{
-  "date": "2026/07/31",
-  "fetched_at": "2026/08/04 11:19",
-  "taiex": {
-    "close": 43119.75,
-    "change": 3186.45,
-    "change_pct": 7.98,
-    "date": "2026/07/31"
-  },
-  "tx": {
-    "dealer": 1996,
-    "trust": 75857,
-    "foreign": -81017,
-    "total": -3164
-  },
-  "mtx": {
-    "dealer": -6170,
-    "trust": 11,
-    "foreign": 2063,
-    "total": -4096
-  },
-  "tmf": {
-    "dealer": -56259,
-    "trust": 0,
-    "foreign": -2098,
-    "total": -58357
-  },
-  "options": {
-    "foreign_call": 0,
-    "foreign_put": 0,
-    "dealer_call": 0,
-    "dealer_put": 0,
-    "trust_call": 0,
-    "trust_put": 0,
-    "opt_date": "2026/07/31"
-  },
-  "scores": {
-    "tx": 52,
-    "mtx": 54,
-    "tmf": 61,
-    "pc": 50,
-    "overall": 54
-  }
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>散戶籌碼儀表板 · 台股期貨 + 加密貨幣</title>
+<style>
+:root{
+  --bg:#f7f7f5;--card:#fff;--border:rgba(0,0,0,0.09);
+  --text:#0b0b0b;--sub:#52514e;--muted:#888781;
+  --bull:#c0392b;--bear:#1a8c5e;--neu:#888781;--accent:#2a78d6;
+  --orange:#e67e22;--purple:#8e44ad;
+  --radius:10px;--shadow:0 1px 3px rgba(0,0,0,0.07),0 0 0 0.5px rgba(0,0,0,0.08);
 }
+@media(prefers-color-scheme:dark){
+  :root{--bg:#141412;--card:#1e1e1c;--border:rgba(255,255,255,0.09);
+  --text:#f0f0eb;--sub:#b0af9f;--muted:#666561;
+  --shadow:0 1px 4px rgba(0,0,0,0.35),0 0 0 0.5px rgba(255,255,255,0.07);}
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','PingFang TC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.topbar{background:var(--card);border-bottom:0.5px solid var(--border);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;position:sticky;top:0;z-index:100;}
+.tb-left{display:flex;align-items:center;gap:8px;}
+.tb-dot{width:7px;height:7px;border-radius:50%;background:var(--bull);flex-shrink:0;}
+.tb-title{font-size:13px;font-weight:500;}
+.badge{font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500;}
+.b-taifex{background:rgba(42,120,214,0.12);color:var(--accent);}
+.b-crypto{background:rgba(230,126,34,0.12);color:var(--orange);}
+.tb-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.tb-date{font-size:11px;color:var(--muted);}
+.wrap{max-width:900px;margin:0 auto;padding:18px 14px 56px;}
+/* ── Section header ── */
+.sec-header{display:flex;align-items:center;gap:8px;margin:20px 0 10px;}
+.sec-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.si-taifex{background:rgba(42,120,214,0.12);}
+.si-crypto{background:rgba(230,126,34,0.12);}
+.sec-title{font-size:14px;font-weight:500;}
+.sec-update{font-size:10px;color:var(--muted);margin-left:auto;}
+/* ── Hero score ── */
+.hero{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:16px 20px;margin-bottom:12px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.hero-circle{width:82px;height:82px;border-radius:50%;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;border:3px solid var(--bull);transition:border-color .3s;}
+.hero-num{font-size:30px;font-weight:600;line-height:1;transition:color .3s;}
+.hero-denom{font-size:10px;color:var(--muted);}
+.hero-info{flex:1;min-width:160px;}
+.hero-title{font-size:14px;font-weight:500;margin-bottom:3px;}
+.hero-desc{font-size:11px;color:var(--sub);line-height:1.6;}
+.bar-track{width:100%;height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:8px;}
+.bar-fill{height:5px;border-radius:3px;background:linear-gradient(90deg,#1a8c5e 0%,#ba7517 50%,#c0392b 100%);transition:width .5s;}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}
+.tag{font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500;}
+.t-bull{background:rgba(192,57,43,0.1);color:var(--bull);}
+.t-bear{background:rgba(26,140,94,0.1);color:var(--bear);}
+.t-neu{background:var(--bg);color:var(--muted);border:0.5px solid var(--border);}
+.t-orange{background:rgba(230,126,34,0.1);color:var(--orange);}
+/* ── Gauges ── */
+.gauges{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:12px;}
+.gauges-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px;}
+@media(max-width:560px){.gauges{grid-template-columns:repeat(2,1fr);}.gauges-2{grid-template-columns:repeat(2,1fr);}}
+.gauge-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:13px 10px 11px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+.g-title{font-size:10px;color:var(--muted);margin-bottom:5px;line-height:1.4;min-height:24px;}
+.g-svg{width:100%;max-width:92px;}
+.g-score{font-size:19px;font-weight:600;margin-top:4px;transition:color .3s;}
+.g-sub{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.4;}
+/* ── Crypto cards ── */
+.crypto-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px;}
+@media(max-width:480px){.crypto-grid{grid-template-columns:1fr;}}
+.crypto-card{background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:14px 16px;}
+.cc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.cc-name{font-size:14px;font-weight:600;}
+.cc-price{font-size:12px;color:var(--muted);}
+.cc-score-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.cc-circle{width:56px;height:56px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2.5px solid var(--bull);flex-shrink:0;}
+.cc-num{font-size:20px;font-weight:600;line-height:1;}
+.cc-denom{font-size:9px;color:var(--muted);}
+.cc-label{font-size:12px;font-weight:500;}
+.cc-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+.cc-bar-track{width:100%;height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:6px;}
+.cc-bar{height:4px;border-radius:2px;background:linear-gradient(90deg,#1a8c5e,#ba7517,#c0392b);transition:width .5s;}
+.cc-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:8px;}
+.cc-stat{background:var(--bg);border-radius:6px;padding:6px 8px;}
+.cs-label{font-size:9px;color:var(--muted);}
+.cs-val{font-size:12px;font-weight:500;margin-top:1px;}
+.cs-sub{font-size:9px;color:var(--muted);}
+/* ── Tables ── */
+.sec-lbl{font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.tbl-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:12px;overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:11px;min-width:460px;}
+thead th{padding:7px 10px;text-align:right;color:var(--muted);font-weight:400;font-size:10px;border-bottom:0.5px solid var(--border);background:var(--bg);white-space:nowrap;}
+thead th:first-child{text-align:left;}
+tbody td{padding:7px 10px;text-align:right;border-bottom:0.5px solid var(--border);white-space:nowrap;}
+tbody tr:last-child td{border-bottom:none;}
+tbody td:first-child{text-align:left;font-weight:500;}
+.hl{background:rgba(42,120,214,0.04);font-weight:500;}
+.bull{color:var(--bull);}.bear{color:var(--bear);}.neu{color:var(--muted);}
+.divider{height:0.5px;background:var(--border);margin:20px 0;}
+.err-banner{display:none;background:rgba(192,57,43,0.08);border:0.5px solid rgba(192,57,43,0.2);border-radius:8px;padding:9px 13px;font-size:12px;color:var(--bull);margin-bottom:12px;}
+.footer{text-align:center;font-size:10px;color:var(--muted);margin-top:24px;line-height:1.9;}
+.footer a{color:var(--accent);text-decoration:none;}
+
+.taiex-bar{background:var(--card);border-bottom:0.5px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;}
+.taiex-item{display:flex;flex-direction:column;}
+.taiex-label{font-size:10px;color:var(--muted);}
+.taiex-val{font-size:18px;font-weight:600;line-height:1.2;}
+.taiex-chg{font-size:11px;margin-top:1px;}
+.taiex-divider{width:0.5px;height:32px;background:var(--border);}
+
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="tb-left">
+    <div class="tb-dot"></div>
+    <span class="tb-title">散戶籌碼儀表板</span>
+    <span class="badge b-taifex">TAIFEX</span>
+    <span class="badge b-crypto">加密貨幣</span>
+  </div>
+  <div class="tb-right">
+    <span class="tb-date" id="dlbl-taifex">台股：載入中</span>
+    <span class="tb-date" id="dlbl-crypto">加密：載入中</span>
+  </div>
+</div>
+
+
+<div class="taiex-bar" id="taiex-bar" style="display:none;">
+  <div class="taiex-item">
+    <span class="taiex-label">加權指數</span>
+    <span class="taiex-val" id="taiex-close">—</span>
+    <span class="taiex-chg" id="taiex-chg">—</span>
+  </div>
+  <div class="taiex-divider"></div>
+  <div class="taiex-item">
+    <span class="taiex-label">台指期（夜盤）</span>
+    <span class="taiex-val" id="fut-close">42,706</span>
+    <span class="taiex-chg bull">+513（+1.19%）夜盤</span>
+  </div>
+  <div class="taiex-divider"></div>
+  <div class="taiex-item">
+    <span class="taiex-label">資料日期</span>
+    <span class="taiex-val" style="font-size:13px;" id="taiex-date">—</span>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="err-banner" id="err-banner"></div>
+
+  <!-- ═══ 台股期貨 ═══ -->
+  <div class="sec-header">
+    <div class="sec-icon si-taifex">📊</div>
+    <span class="sec-title">台灣期貨 · 散戶籌碼</span>
+    <span class="sec-update" id="taifex-update">每日 17:00 更新</span>
+  </div>
+
+  <div class="hero">
+    <div class="hero-circle" id="hero-circle">
+      <span class="hero-num bull" id="hero-num">—</span>
+      <span class="hero-denom">/100</span>
+    </div>
+    <div class="hero-info">
+      <div class="hero-title" id="hero-title">散戶綜合情緒</div>
+      <div class="hero-desc">台指期、小台、微台多空比及選擇權 P/C 比加權（期貨60%／選擇權40%）<br>≥65 極端偏多（反指標警示）· 35–65 中性區 · ≤35 偏空</div>
+      <div class="bar-track"><div class="bar-fill" id="bar-fill" style="width:50%"></div></div>
+      <div class="tags" id="tags"></div>
+    </div>
+  </div>
+
+  <div class="gauges">
+    <div class="gauge-card">
+      <div class="g-title">台指期（TX）<br>散戶多空比</div>
+      <svg class="g-svg" viewBox="0 0 100 55">
+        <defs><linearGradient id="grd" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#1a8c5e"/><stop offset="50%" stop-color="#ba7517"/><stop offset="100%" stop-color="#c0392b"/>
+        </linearGradient></defs>
+        <path d="M7,52 A43,43 0 0,1 93,52" fill="none" stroke="rgba(128,128,128,0.18)" stroke-width="7" stroke-linecap="round"/>
+        <path d="M7,52 A43,43 0 0,1 93,52" fill="none" stroke="url(#grd)" stroke-width="7" stroke-linecap="round" stroke-dasharray="135" id="arc-tx" stroke-dashoffset="68"/>
+        <line id="nd-tx" x1="50" y1="52" x2="50" y2="14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" transform="rotate(0 50 52)" style="transition:transform .5s"/>
+        <circle cx="50" cy="52" r="3.5" fill="currentColor"/>
+      </svg>
+      <div class="g-score" id="gs-tx">—</div>
+      <div class="g-sub" id="gsub-tx">載入中</div>
+    </div>
+    <div class="gauge-card">
+      <div class="g-title">小台（MTX）<br>散戶多空比</div>
+      <svg class="g-svg" viewBox="0 0 100 55">
+        <path d="M7,52 A43,43 0 0,1 93,52" fill="none" stroke="rgba(128,128,128,0.18)" stroke-width="7" stroke-linecap="round"/>
+        <path d="M7,52 A43,43 0 0,1 93,52" fill="none" stroke="url(#grd)" stroke-width="7" stroke-linecap="round" stroke-dasharray="135" id="arc-mtx" stroke-dashoffset="68"/>
+        <line id="nd-mtx" x1="50" y1="52" x2="50" y2="14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" transform="rotate(0 50 52)" style="transition:transform .5s"/>
+        <circle cx="50" cy="52" r="3.5" fill="currentColor"/>
+      </svg>
+      <div class="g-score" id="gs-mtx">—</div>
+      <div class="g-sub" id="gsub-mtx">載入中</div>
+    </div>
+    <div class="gauge-card">
+      <div class="g-title">微台（TMF）<br>散戶多空比</div>
+      <svg class="g-svg" viewBox="0 0 100 55">
+        <path d="M7,52 A43,43 0 0,1 93,52" fill="none" stroke="rgba(128,128,128,0.18)" stroke-width="7" stroke-linecap="round"/>
+        <path d="M7,52 A43,43 0 0,1 93,52" fill="none" stroke="url(#grd)" stroke-width="7" stroke-linecap="round" stroke-dasharray="135" id="arc-tmf" stroke-dashoffset="68"/>
+        <line id="nd-tmf" x1="50" y1="52" x2="50" y2="14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" transform="rotate(0 50 52)" style="transition:transform .5s"/>
+        <circle cx="50" cy="52" r="3.5" fill="currentColor"/>
+      </svg>
+      <div class="g-score" id="gs-tmf">—</div>
+      <div class="g-sub" id="gsub-tmf">載入中</div>
+    </div>
+    <div class="gauge-card">
+      <div class="g-title">選擇權<br>P/C 比</div>
+      <svg class="g-svg" viewBox="0 0 100 55">
+        <path d="M7,52 A43,43 0 0,1 93,52" fill="none" stroke="rgba(128,128,128,0.18)" stroke-width="7" stroke-linecap="round"/>
+        <path d="M7,52 A43,43 0 0,1 93,52" fill="none" stroke="url(#grd)" stroke-width="7" stroke-linecap="round" stroke-dasharray="135" id="arc-pc" stroke-dashoffset="68"/>
+        <line id="nd-pc" x1="50" y1="52" x2="50" y2="14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" transform="rotate(0 50 52)" style="transition:transform .5s"/>
+        <circle cx="50" cy="52" r="3.5" fill="currentColor"/>
+      </svg>
+      <div class="g-score" id="gs-pc">—</div>
+      <div class="g-sub" id="gsub-pc">載入中</div>
+    </div>
+  </div>
+
+  <div class="sec-lbl">期貨三大法人未平倉</div>
+  <div class="tbl-card"><table>
+    <thead><tr><th>契約</th><th>自營商</th><th>投信</th><th>外資</th><th>法人合計</th><th>散戶推估</th><th>評分</th><th>方向</th></tr></thead>
+    <tbody id="ftbody"><tr><td colspan="8" style="padding:16px;text-align:center;color:var(--muted)">載入中...</td></tr></tbody>
+  </table></div>
+
+  <div class="sec-lbl">評分總覽</div>
+  <div class="tbl-card"><table>
+    <thead><tr><th>指標</th><th>計算基礎</th><th>散戶推估</th><th>分數</th><th>訊號</th></tr></thead>
+    <tbody id="stbody"><tr><td colspan="5" style="padding:16px;text-align:center;color:var(--muted)">載入中...</td></tr></tbody>
+  </table></div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ 加密貨幣 ═══ -->
+  <div class="sec-header">
+    <div class="sec-icon si-crypto">🔶</div>
+    <span class="sec-title">加密貨幣 · 散戶情緒（Binance Futures）</span>
+    <span class="sec-update">每 4 小時更新</span>
+  </div>
+
+  <div class="crypto-grid" id="crypto-grid">
+    <div class="gauge-card" style="padding:20px;align-items:flex-start;">載入中...</div>
+    <div class="gauge-card" style="padding:20px;align-items:flex-start;">載入中...</div>
+  </div>
+
+  <div class="sec-lbl">加密貨幣指標說明</div>
+  <div class="tbl-card"><table>
+    <thead><tr><th>指標</th><th>說明</th><th>反指標？</th><th>權重</th></tr></thead>
+    <tbody>
+      <tr><td>恐懼貪婪指數</td><td>Alternative.me 綜合市場情緒（0=極恐 100=極貪）</td><td class="bull">是（貪婪>75 → 警示）</td><td>50%</td></tr>
+      <tr><td>BTC 市佔率</td><td>BTC 佔全加密市值% (低=山寨季=散戶狂熱)</td><td class="bull">是（&lt;46% 危險）</td><td>30%</td></tr>
+      <tr><td>7日價格動能</td><td>7日漲跌幅（大漲後散戶追多 → 偏高）</td><td class="bull">是（暴漲→警示）</td><td>20%</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="footer" id="footer">
+    台股資料：<a href="https://www.taifex.com.tw" target="_blank">臺灣期貨交易所</a>　·　加密貨幣資料：<a href="https://www.binance.com" target="_blank">Binance Futures API</a><br>
+    本儀表板僅供參考，不構成投資建議
+  </div>
+</div>
+
+<script>
+function fmt(n){if(n==null)return"—";var a=Math.abs(Math.round(n)).toLocaleString("zh-TW");return(n>=0?"+":"−")+a;}
+function fmtAbs(n){return Math.abs(Math.round(n||0)).toLocaleString("zh-TW");}
+function sc(s){return s>=65?"bull":s<=35?"bear":"neu";}
+function scColor(s){return s>=65?"var(--bull)":s<=35?"var(--bear)":"var(--muted)";}
+function sl(s){if(s>=72)return"極度偏多 ⚠";if(s>=62)return"偏多";if(s>=52)return"中性偏多";if(s>=42)return"中性偏空";if(s>=32)return"偏空";return"極度偏空 ⚠";}
+function slFull(s){if(s>=72)return"極度偏多 ⚠ 反指標警示";if(s>=65)return"偏多—接近警示區";if(s>=55)return"中度偏多";if(s>=45)return"中性偏多";if(s>=35)return"中性偏空";if(s>=25)return"偏空";return"極度偏空 ⚠ 警示";}
+function clr(n){return n>=0?"bull":"bear";}
+function setGauge(id,score){
+  var arc=document.getElementById("arc-"+id),nd=document.getElementById("nd-"+id);
+  if(arc)arc.setAttribute("stroke-dashoffset",(135-(score/100)*135).toFixed(1));
+  if(nd)nd.setAttribute("transform","rotate("+(-90+(score/100)*180)+" 50 52)");
+  var gs=document.getElementById("gs-"+id);
+  if(gs){gs.textContent=score;gs.className="g-score "+sc(score);}
+}
+
+function renderTaifex(d){
+  var tx=d.tx||{},mtx=d.mtx||{},tmf=d.tmf||{},opt=d.options||{},sc2=d.scores||{};
+  var ov=sc2.overall||50,txS=sc2.tx||50,mtxS=sc2.mtx||50,tmfS=sc2.tmf||50,pcS=sc2.pc||50;
+
+  document.getElementById("dlbl-taifex").textContent="台股："+d.date;
+  var heroNum=document.getElementById("hero-num");
+  heroNum.textContent=ov; heroNum.className="hero-num "+sc(ov);
+  var circle=document.getElementById("hero-circle");
+  circle.style.borderColor=scColor(ov);
+  circle.style.background=ov>=65?"rgba(192,57,43,0.06)":ov<=35?"rgba(26,140,94,0.06)":"transparent";
+  document.getElementById("hero-title").textContent="散戶綜合情緒："+slFull(ov);
+  document.getElementById("bar-fill").style.width=ov+"%";
+  var tagMap=[[txS>=50?"台指期 偏多":"台指期 偏空",txS],[mtxS>=50?"小台 偏多":"小台 偏空",mtxS],[tmfS>=50?"微台 偏多":tmfS>=35?"微台 中性":"微台 偏空",tmfS],[pcS>=50?"選擇權 偏多":"選擇權 賣權偏重",pcS]];
+  document.getElementById("tags").innerHTML=tagMap.map(function(x){var c=x[1]>=65?"t-bull":x[1]<=35?"t-bear":"t-neu";return'<span class="tag '+c+'">'+x[0]+'</span>';}).join("");
+  setGauge("tx",txS);setGauge("mtx",mtxS);setGauge("tmf",tmfS);setGauge("pc",pcS);
+  var fc=opt.foreign_call||0,fp=opt.foreign_put||0;
+  document.getElementById("gsub-tx").innerHTML="外資淨空<br>"+fmt(tx.foreign)+" 口";
+  document.getElementById("gsub-mtx").innerHTML="法人合計<br>"+fmt(mtx.total)+" 口";
+  document.getElementById("gsub-tmf").innerHTML="法人合計<br>"+fmt(tmf.total)+" 口";
+  document.getElementById("gsub-pc").innerHTML="外資賣/(買+賣)<br>"+((fc+fp)>0?((fp/(fc+fp))*100).toFixed(1)+"%":"—");
+  document.getElementById("ftbody").innerHTML=[["台指期 TX",tx,txS],["小台 MTX",mtx,mtxS],["微台 TMF",tmf,tmfS]].map(function(r){
+    var n=r[0],c=r[1],s=r[2];
+    return"<tr><td>"+n+"</td><td class='"+clr(c.dealer)+"'>"+fmt(c.dealer)+"</td><td class='"+clr(c.trust||0)+"'>"+fmt(c.trust||0)+"</td><td class='"+clr(c.foreign)+"'>"+fmt(c.foreign)+"</td><td class='"+clr(c.total)+"'>"+fmt(c.total)+"</td><td class='"+clr(-c.total)+"'>"+fmt(-c.total)+"</td><td class='"+sc(s)+"'>"+s+"</td><td class='"+sc(s)+"'>"+(s>=50?"↑ 偏多":"↓ 偏空")+"</td></tr>";
+  }).join("");
+  document.getElementById("stbody").innerHTML=
+    "<tr><td>台指期</td><td>外資淨空 "+fmt(tx.foreign)+"口</td><td class='"+sc(txS)+"'>"+fmt(-tx.total)+"口</td><td class='"+sc(txS)+"'>"+txS+"</td><td class='"+sc(txS)+"'>"+slFull(txS)+"</td></tr>"+
+    "<tr><td>小台</td><td>自營商淨空為主</td><td class='"+sc(mtxS)+"'>"+fmt(-mtx.total)+"口</td><td class='"+sc(mtxS)+"'>"+mtxS+"</td><td class='"+sc(mtxS)+"'>"+slFull(mtxS)+"</td></tr>"+
+    "<tr><td>微台</td><td>自營商淨空為主</td><td class='"+sc(tmfS)+"'>"+fmt(-tmf.total)+"口</td><td class='"+sc(tmfS)+"'>"+tmfS+"</td><td class='"+sc(tmfS)+"'>"+slFull(tmfS)+"</td></tr>"+
+    "<tr><td>選擇權 P/C</td><td>外資賣/(買+賣)</td><td class='"+sc(pcS)+"'>"+((fc+fp)>0?((fp/(fc+fp))*100).toFixed(1)+"%":"—")+"</td><td class='"+sc(pcS)+"'>"+pcS+"</td><td class='"+sc(pcS)+"'>"+slFull(pcS)+"</td></tr>"+
+    "<tr class='hl'><td>綜合評分</td><td>期貨60%/選擇權40%</td><td>—</td><td class='"+sc(ov)+"'>"+ov+"</td><td class='"+sc(ov)+"'>"+slFull(ov)+"</td></tr>";
+}
+
+function fgLabel(v){if(v>=80)return"極度貪婪";if(v>=60)return"貪婪";if(v>=40)return"中性";if(v>=20)return"恐懼";return"極度恐懼";}
+function fgColor(v){if(v>=75)return"var(--bull)";if(v>=50)return"var(--orange)";if(v>=25)return"var(--neu)";return"var(--bear)";}
+function makeCryptoCard(sym, info){
+  if(!info) return '<div class="crypto-card"><div style="color:var(--muted);font-size:12px;padding:8px;">'+sym+' 數據不可用</div></div>';
+  var s=info.scores||{},ov=s.overall||50;
+  var fg=info.fear_greed||{},fgv=fg.value||50;
+  var name=sym==="BTCUSDT"?"Bitcoin (BTC)":"Dogecoin (DOGE)";
+  var emoji=sym==="BTCUSDT"?"₿":"🐕";
+  var priceStr=sym==="BTCUSDT"?
+    "$"+(info.price||0).toLocaleString("en",{maximumFractionDigits:0}):
+    "$"+(info.price||0).toFixed(5);
+  var borderCol=ov>=65?"var(--bull)":ov<=35?"var(--bear)":"var(--muted)";
+  var bgCol=ov>=65?"rgba(192,57,43,0.07)":ov<=35?"rgba(26,140,94,0.07)":"transparent";
+  var numCls=ov>=65?"bull":ov<=35?"bear":"neu";
+  var ch24=info.change_24h||0,ch7=info.change_7d||0;
+  var dom=info.btc_dominance||52;
+  return '<div class="crypto-card">'+
+    '<div class="cc-header">'+
+      '<span class="cc-name">'+emoji+' '+name+'</span>'+
+      '<span class="cc-price">'+priceStr+'</span>'+
+    '</div>'+
+    '<div class="cc-score-row">'+
+      '<div class="cc-circle" style="border-color:'+borderCol+';background:'+bgCol+';">'+
+        '<span class="cc-num '+numCls+'">'+ov+'</span>'+
+        '<span class="cc-denom">/100</span>'+
+      '</div>'+
+      '<div>'+
+        '<div class="cc-label">'+sl(ov)+'</div>'+
+        '<div class="cc-sub">散戶情緒評分（越高=越危險）</div>'+
+        '<div class="bar-track cc-bar-track" style="margin-top:6px;"><div class="cc-bar" style="width:'+ov+'%"></div></div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="cc-stats">'+
+      '<div class="cc-stat"><div class="cs-label">恐懼貪婪指數</div><div class="cs-val" style="color:'+fgColor(fgv)+'">'+fgv+' · '+fgLabel(fgv)+'</div><div class="cs-sub">反指標 · &gt;75貪婪⚠</div></div>'+
+      '<div class="cc-stat"><div class="cs-label">BTC市佔率</div><div class="cs-val '+(dom<46?"bull":dom>58?"bear":"neu")+'">'+dom+'%</div><div class="cs-sub">&lt;46% 山寨季⚠</div></div>'+
+      '<div class="cc-stat"><div class="cs-label">24h 漲跌</div><div class="cs-val '+(ch24>=0?"bull":"bear")+'">'+(ch24>=0?"+":"")+ch24+'%</div><div class="cs-sub">近日動能</div></div>'+
+      '<div class="cc-stat"><div class="cs-label">7d 漲跌</div><div class="cs-val '+(ch7>=0?"bull":"bear")+'">'+(ch7>=0?"+":"")+ch7+'%</div><div class="cs-sub">週線趨勢</div></div>'+
+    '</div>'+
+  '</div>';
+}
+
+function renderCrypto(crypto){
+  if(!crypto||!crypto.data) return;
+  document.getElementById("dlbl-crypto").textContent="加密："+crypto.fetched_at;
+  var btc=crypto.data["BTCUSDT"],doge=crypto.data["DOGEUSDT"];
+  document.getElementById("crypto-grid").innerHTML=
+    makeCryptoCard("BTCUSDT",btc)+makeCryptoCard("DOGEUSDT",doge);
+}
+
+
+function renderTaiex(t) {
+  if (!t) return;
+  var bar = document.getElementById('taiex-bar');
+  if (bar) bar.style.display = 'flex';
+  var cl = document.getElementById('taiex-close');
+  var chg = document.getElementById('taiex-chg');
+  var dt = document.getElementById('taiex-date');
+  if (cl) cl.textContent = (t.close || 0).toLocaleString('zh-TW', {minimumFractionDigits:2, maximumFractionDigits:2});
+  if (cl) cl.className = 'taiex-val ' + (t.change >= 0 ? 'bull' : 'bear');
+  if (chg) {
+    var sign = t.change >= 0 ? '+' : '';
+    chg.textContent = sign + (t.change||0).toFixed(2) + '（' + sign + (t.change_pct||0).toFixed(2) + '%）';
+    chg.className = 'taiex-chg ' + (t.change >= 0 ? 'bull' : 'bear');
+  }
+  if (dt) dt.textContent = t.date || '';
+}
+
+fetch("data.json?t="+Date.now())
+  .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
+  .then(function(d){
+    renderTaifex(d);
+    if(d.taiex) renderTaiex(d.taiex);
+    if(d.crypto) renderCrypto(d.crypto);
+    else document.getElementById("crypto-grid").innerHTML='<div class="gauge-card" style="padding:20px;grid-column:span 2;text-align:center;color:var(--muted);font-size:12px;">加密貨幣數據尚未載入，下次排程執行後將自動更新</div>';
+    document.getElementById("footer").innerHTML='台股：<a href="https://www.taifex.com.tw" target="_blank">臺灣期貨交易所</a> · 加密貨幣：<a href="https://www.binance.com" target="_blank">Binance Futures API</a><br>最後更新：台股 '+(d.date||"—")+' · 加密 '+(d.crypto?d.crypto.fetched_at:"—")+'　·　本儀表板僅供參考，不構成投資建議';
+  })
+  .catch(function(e){
+    var b=document.getElementById("err-banner");
+    b.textContent="⚠ 無法載入 data.json："+e;
+    b.style.display="block";
+  });
+</script>
+</body>
+</html>
