@@ -2,7 +2,6 @@
 """
 台灣期貨交易所散戶籌碼數據抓取
 使用官方 OpenAPI：https://openapi.taifex.com.tw/v1
-直接回傳 JSON，不需解析 HTML，GitHub Actions 環境完全暢通
 """
 import json, urllib.request, sys, time
 from datetime import datetime, timezone, timedelta
@@ -10,13 +9,19 @@ from datetime import datetime, timezone, timedelta
 TZ_TAIPEI = timezone(timedelta(hours=8))
 BASE = "https://openapi.taifex.com.tw/v1"
 
-CONTRACT_MAP = {"TX": "tx", "MTX": "mtx", "TMF": "tmf"}
+# ← 修正：ContractCode 是中文
+CONTRACT_MAP = {
+    "臺股期貨":    "tx",
+    "小型臺指期貨": "mtx",
+    "微型臺指期貨": "tmf",
+}
 
+# ← 修正：Item 含「外資及陸資」
 IDENTITY_MAP = {
-    "自營商": "dealer", "投信": "trust", "外資": "foreign",
-    "Dealer": "dealer", "Trust": "trust",
-    "Foreign Institutional Investors": "foreign",
-    "Foreign Institutional Investors and Foreign Individuals": "foreign",
+    "自營商":   "dealer",
+    "投信":     "trust",
+    "外資及陸資": "foreign",
+    "外資":     "foreign",
 }
 
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; taifex-dashboard/1.0)",
@@ -46,11 +51,10 @@ def parse_int(s):
 
 
 def fmt_date(d):
-    """YYYYMMDD → YYYY/MM/DD"""
-    if d and len(str(d)) == 8:
-        d = str(d)
+    d = str(d)
+    if len(d) == 8:
         return f"{d[:4]}/{d[4:6]}/{d[6:]}"
-    return str(d)
+    return d
 
 
 def fetch_futures():
@@ -60,7 +64,6 @@ def fetch_futures():
         raise Exception("API 回傳空資料")
 
     dates = sorted(set(str(r.get("Date","")) for r in data if r.get("Date")), reverse=True)
-    print("前3筆原始:", json.dumps(data[:3], ensure_ascii=False), flush=True)
     latest = dates[0]
     print(f"   最新日期：{fmt_date(latest)}", flush=True)
 
@@ -70,14 +73,21 @@ def fetch_futures():
     for row in data:
         if str(row.get("Date","")) != latest:
             continue
+
         code = str(row.get("ContractCode","")).strip()
         if code not in CONTRACT_MAP:
             continue
         key = CONTRACT_MAP[code]
+
         item = str(row.get("Item","")).strip()
-        identity = next((v for k,v in IDENTITY_MAP.items() if k in item), None)
+        identity = None
+        for k, v in IDENTITY_MAP.items():
+            if k in item:
+                identity = v
+                break
         if not identity:
             continue
+
         net_oi = parse_int(row.get("OpenInterest(Net)", 0))
         result[key][identity] = net_oi
         print(f"   ✓ {code} {identity}: {net_oi:,}", flush=True)
@@ -99,19 +109,38 @@ def fetch_options():
             return opt
         dates = sorted(set(str(r.get("Date","")) for r in data if r.get("Date")), reverse=True)
         latest = dates[0]
+
+        # 選擇權身份別也用相同對照
+        OPT_IDENTITY = {
+            "自營商":    "dealer",
+            "投信":      "trust",
+            "外資及陸資": "foreign",
+            "外資":      "foreign",
+        }
+
         for row in data:
             if str(row.get("Date","")) != latest:
                 continue
-            if "TXO" not in str(row.get("ContractCode","")):
+            # ContractCode 含 TXO
+            code = str(row.get("ContractCode",""))
+            if "TXO" not in code and "臺指選擇權" not in code:
                 continue
+
             item = str(row.get("Item","")).strip()
             cp   = str(row.get("CallPut","")).strip()
-            identity = next((v for k,v in IDENTITY_MAP.items() if k in item), None)
+
+            identity = None
+            for k, v in OPT_IDENTITY.items():
+                if k in item:
+                    identity = v
+                    break
             if not identity:
                 continue
+
             is_call = "買權" in cp or cp.upper() in ("CALL","C")
             oi = parse_int(row.get("OpenInterest(Long)", 0))
             opt[f"{identity}_{'call' if is_call else 'put'}"] = oi
+
         opt["opt_date"] = fmt_date(latest)
         print(f"   外資 Call/Put：{opt['foreign_call']:,} / {opt['foreign_put']:,}", flush=True)
     except Exception as e:
@@ -133,8 +162,8 @@ def fetch_taiex():
         import time as t
         ts = meta.get("regularMarketTime", int(t.time()))
         dt = datetime.fromtimestamp(ts, tz=TZ_TAIPEI)
-        return {"close": round(close,2), "change": chg, "change_pct": pct,
-                "date": dt.strftime("%Y/%m/%d")}
+        return {"close": round(close,2), "change": chg,
+                "change_pct": pct, "date": dt.strftime("%Y/%m/%d")}
     except Exception as e:
         print(f"   ⚠️  加權指數失敗：{e}", flush=True)
         return None
