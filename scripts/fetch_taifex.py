@@ -60,6 +60,7 @@ def fetch_futures():
         raise Exception("API 回傳空資料")
 
     dates = sorted(set(str(r.get("Date","")) for r in data if r.get("Date")), reverse=True)
+    print("前3筆原始:", json.dumps(data[:3], ensure_ascii=False), flush=True)
     latest = dates[0]
     print(f"   最新日期：{fmt_date(latest)}", flush=True)
 
