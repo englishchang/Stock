@@ -1,23 +1,23 @@
 {
-  "date": "2026/08/04",
-  "fetched_at": "2026/08/05 08:46",
+  "date": "2026/08/05",
+  "fetched_at": "2026/08/06 08:23",
   "tx": {
-    "dealer": 2356,
-    "trust": 82548,
-    "foreign": -87858,
-    "total": -2954
+    "dealer": 1311,
+    "trust": 84575,
+    "foreign": -87199,
+    "total": -1313
   },
   "mtx": {
-    "dealer": -4951,
-    "trust": 30,
-    "foreign": 926,
-    "total": -3995
+    "dealer": -5296,
+    "trust": 35,
+    "foreign": -1023,
+    "total": -6284
   },
   "tmf": {
-    "dealer": -37644,
+    "dealer": -30469,
     "trust": 0,
-    "foreign": 9156,
-    "total": -28488
+    "foreign": 13955,
+    "total": -16514
   },
   "options": {
     "foreign_call": 10457,
@@ -30,57 +30,57 @@
   },
   "scores": {
     "tx": 51,
-    "mtx": 54,
-    "tmf": 55,
+    "mtx": 56,
+    "tmf": 53,
     "pc": 24,
-    "overall": 41
+    "overall": 42
   },
   "taiex": {
-    "close": 43360.66,
-    "change": -25.75,
-    "change_pct": -0.06,
-    "date": "2026/08/04"
+    "close": 44611.6,
+    "change": 1250.94,
+    "change_pct": 2.88,
+    "date": "2026/08/05"
   },
   "crypto": {
-    "fetched_at": "2026/08/06 05:03",
+    "fetched_at": "2026/08/06 08:23",
     "fear_greed": {
-      "value": 27,
-      "label": "Fear"
+      "value": 25,
+      "label": "Extreme Fear"
     },
-    "btc_dominance": 56.62,
+    "btc_dominance": 56.59,
     "data": {
       "BTCUSDT": {
         "symbol": "BTCUSDT",
-        "price": 64752,
-        "change_24h": 0.75,
-        "change_7d": 2.15,
+        "price": 64577,
+        "change_24h": 0.94,
+        "change_7d": 1.04,
         "fear_greed": {
-          "value": 27,
-          "label": "Fear"
+          "value": 25,
+          "label": "Extreme Fear"
         },
-        "btc_dominance": 56.62,
+        "btc_dominance": 56.59,
         "scores": {
-          "fear_greed": 27,
+          "fear_greed": 25,
           "momentum": 50,
           "btc_dom": 45,
-          "overall": 37
+          "overall": 36
         }
       },
       "DOGEUSDT": {
         "symbol": "DOGEUSDT",
-        "price": 0.070243,
-        "change_24h": -0.08,
-        "change_7d": 1.55,
+        "price": 0.070001,
+        "change_24h": 0.24,
+        "change_7d": -0.12,
         "fear_greed": {
-          "value": 27,
-          "label": "Fear"
+          "value": 25,
+          "label": "Extreme Fear"
         },
-        "btc_dominance": 56.62,
+        "btc_dominance": 56.59,
         "scores": {
-          "fear_greed": 27,
+          "fear_greed": 25,
           "momentum": 50,
           "btc_dom": 45,
-          "overall": 37
+          "overall": 36
         }
       }
     }
