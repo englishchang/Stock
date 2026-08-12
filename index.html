@@ -97,6 +97,24 @@ tbody td:first-child{text-align:left;font-weight:500;}
 .footer{text-align:center;font-size:10px;color:var(--muted);margin-top:24px;line-height:1.9;}
 .footer a{color:var(--accent);text-decoration:none;}
 
+/* ── 融資融券區塊 ── */
+.margin-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px;}
+@media(max-width:560px){.margin-grid{grid-template-columns:repeat(2,1fr);}}
+.margin-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 12px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+.m-label{font-size:10px;color:var(--muted);margin-bottom:6px;line-height:1.4;}
+.m-val{font-size:18px;font-weight:600;line-height:1.2;margin-top:2px;}
+.m-sub{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.4;}
+.m-bar-track{width:100%;height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:6px;}
+.m-bar{height:4px;border-radius:2px;background:linear-gradient(90deg,#1a8c5e,#ba7517,#c0392b);transition:width .5s;}
+.margin-score-hero{background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:14px 18px;margin-bottom:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.ms-circle{width:64px;height:64px;border-radius:50%;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2.5px solid var(--muted);transition:border-color .3s;}
+.ms-num{font-size:22px;font-weight:600;line-height:1;}
+.ms-denom{font-size:9px;color:var(--muted);}
+.ms-info{flex:1;min-width:140px;}
+.ms-title{font-size:13px;font-weight:500;margin-bottom:3px;}
+.ms-desc{font-size:11px;color:var(--sub);line-height:1.6;}
+
+
 .taiex-bar{background:var(--card);border-bottom:0.5px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;}
 .taiex-item{display:flex;flex-direction:column;}
 .taiex-label{font-size:10px;color:var(--muted);}
@@ -225,7 +243,50 @@ tbody td:first-child{text-align:left;font-weight:500;}
     <tbody id="stbody"><tr><td colspan="5" style="padding:16px;text-align:center;color:var(--muted)">載入中...</td></tr></tbody>
   </table></div>
 
+
   <div class="divider"></div>
+
+  <!-- ═══ 融資融券（扣除ETF）═══ -->
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(142,68,173,0.12);">💰</div>
+    <span class="sec-title">融資融券 · 散戶槓桿指標（扣除ETF）</span>
+    <span class="sec-update" id="margin-update">每 4 小時更新</span>
+  </div>
+
+  <div class="margin-score-hero">
+    <div class="ms-circle" id="ms-circle">
+      <span class="ms-num" id="ms-num">—</span>
+      <span class="ms-denom">/100</span>
+    </div>
+    <div class="ms-info">
+      <div class="ms-title" id="ms-title">融資槓桿指標</div>
+      <div class="ms-desc">扣除 ETF 後純個股融資餘額越高 → 散戶槓桿越重 → 反指標風險越高<br>≥65 警示 · 35–65 中性 · ≤35 偏低（相對安全）</div>
+      <div class="m-bar-track"><div class="m-bar" id="ms-bar" style="width:50%"></div></div>
+    </div>
+  </div>
+
+  <div class="margin-grid">
+    <div class="margin-card">
+      <div class="m-label">扣ETF<br>融資餘額</div>
+      <div class="m-val bull" id="m-ex-margin">—</div>
+      <div class="m-sub" id="m-ex-margin-sub">億元</div>
+    </div>
+    <div class="margin-card">
+      <div class="m-label">全市場<br>融資餘額</div>
+      <div class="m-val" id="m-total-margin">—</div>
+      <div class="m-sub">億元（含ETF）</div>
+    </div>
+    <div class="margin-card">
+      <div class="m-label">扣ETF<br>融券餘額</div>
+      <div class="m-val bear" id="m-ex-short">—</div>
+      <div class="m-sub" id="m-ex-short-sub">張</div>
+    </div>
+    <div class="margin-card">
+      <div class="m-label">券資比<br>（扣ETF）</div>
+      <div class="m-val neu" id="m-ratio">—</div>
+      <div class="m-sub">% · 高=放空籌碼重</div>
+    </div>
+  </div>
 
   <!-- ═══ 加密貨幣 ═══ -->
   <div class="sec-header">
@@ -353,6 +414,36 @@ function renderCrypto(crypto){
 }
 
 
+
+function scMargin(s){return s>=65?"bull":s<=35?"bear":"neu";}
+function scMarginColor(s){return s>=65?"var(--bull)":s<=35?"var(--bear)":"var(--muted)";}
+function slMargin(s){
+  if(s>=72)return"槓桿過重 ⚠ 警示";
+  if(s>=62)return"偏高";
+  if(s>=52)return"中性偏高";
+  if(s>=42)return"中性";
+  if(s>=32)return"偏低（相對安全）";
+  return"極低（底部跡象）";
+}
+function renderMargin(m){
+  if(!m) return;
+  document.getElementById("margin-update").textContent="更新："+m.fetched_at;
+  var s=m.score||50;
+  var numEl=document.getElementById("ms-num");
+  numEl.textContent=s; numEl.className="ms-num "+scMargin(s);
+  var circ=document.getElementById("ms-circle");
+  circ.style.borderColor=scMarginColor(s);
+  circ.style.background=s>=65?"rgba(192,57,43,0.07)":s<=35?"rgba(26,140,94,0.07)":"transparent";
+  document.getElementById("ms-title").textContent="融資槓桿指標："+slMargin(s);
+  document.getElementById("ms-bar").style.width=s+"%";
+  document.getElementById("m-ex-margin").textContent=(m.ex_etf_margin_bn||0).toLocaleString("zh-TW",{minimumFractionDigits:1});
+  document.getElementById("m-ex-margin-sub").textContent="億元（個股 "+m.stock_count+" 檔）";
+  document.getElementById("m-total-margin").textContent=(m.total_margin_bn||0).toLocaleString("zh-TW",{minimumFractionDigits:1});
+  document.getElementById("m-ex-short").textContent=(m.ex_etf_short_k||0).toLocaleString("zh-TW");
+  document.getElementById("m-ex-short-sub").textContent="張（ETF "+m.etf_count+" 檔已扣除）";
+  document.getElementById("m-ratio").textContent=(m.short_margin_ratio||0).toFixed(4);
+}
+
 function renderTaiex(t) {
   if (!t) return;
   var bar = document.getElementById('taiex-bar');
@@ -375,6 +466,7 @@ fetch("data.json?t="+Date.now())
   .then(function(d){
     renderTaifex(d);
     if(d.taiex) renderTaiex(d.taiex);
+    if(d.margin) renderMargin(d.margin);
     if(d.crypto) renderCrypto(d.crypto);
     else document.getElementById("crypto-grid").innerHTML='<div class="gauge-card" style="padding:20px;grid-column:span 2;text-align:center;color:var(--muted);font-size:12px;">加密貨幣數據尚未載入，下次排程執行後將自動更新</div>';
     document.getElementById("footer").innerHTML='台股：<a href="https://www.taifex.com.tw" target="_blank">臺灣期貨交易所</a> · 加密貨幣：<a href="https://www.binance.com" target="_blank">Binance Futures API</a><br>最後更新：台股 '+(d.date||"—")+' · 加密 '+(d.crypto?d.crypto.fetched_at:"—")+'　·　本儀表板僅供參考，不構成投資建議';
