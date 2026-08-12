@@ -1,6 +1,6 @@
 {
   "date": "2026/08/11",
-  "fetched_at": "2026/08/12 17:04",
+  "fetched_at": "2026/08/12 17:17",
   "tx": {
     "dealer": 1899,
     "trust": 83418,
@@ -42,7 +42,7 @@
     "date": "2026/08/12"
   },
   "crypto": {
-    "fetched_at": "2026/08/12 17:07",
+    "fetched_at": "2026/08/12 17:16",
     "fear_greed": {
       "value": 27,
       "label": "Fear"
@@ -51,9 +51,9 @@
     "data": {
       "BTCUSDT": {
         "symbol": "BTCUSDT",
-        "price": 63737,
-        "change_24h": -0.55,
-        "change_7d": -0.5,
+        "price": 63795,
+        "change_24h": -0.43,
+        "change_7d": -0.4,
         "fear_greed": {
           "value": 27,
           "label": "Fear"
@@ -68,9 +68,9 @@
       },
       "DOGEUSDT": {
         "symbol": "DOGEUSDT",
-        "price": 0.071526,
-        "change_24h": 1.72,
-        "change_7d": 2.42,
+        "price": 0.071578,
+        "change_24h": 1.85,
+        "change_7d": 2.53,
         "fear_greed": {
           "value": 27,
           "label": "Fear"
@@ -84,16 +84,5 @@
         }
       }
     }
-  },
-  "margin": {
-    "total_margin_bn": 89.71,
-    "total_short_k": 204819,
-    "ex_etf_margin_bn": 89.28,
-    "ex_etf_short_k": 204019,
-    "short_margin_ratio": 22.8516,
-    "stock_count": 1285,
-    "etf_count": 8,
-    "score": 2,
-    "fetched_at": "2026/08/12 17:12"
   }
 }
