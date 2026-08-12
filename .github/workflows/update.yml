@@ -14,6 +14,7 @@ on:
           - all
           - crypto_only
           - taifex_only
+          - margin_only
 
 permissions:
   contents: write
@@ -47,12 +48,17 @@ jobs:
       - name: 安裝工具
         run: sudo apt-get install -y wget
 
-      # ── 加密貨幣：每次都跑 ──
+      # 加密貨幣：每次都跑
       - name: 抓取 BTC / DOGE 數據
-        if: github.event.inputs.mode != 'taifex_only'
+        if: github.event.inputs.mode != 'taifex_only' && github.event.inputs.mode != 'margin_only'
         run: python scripts/fetch_crypto.py
 
-      # ── 台股期貨：每天 UTC 08:00（台北 16:00）週一至週五 ──
+      # 融資融券（扣除ETF）：每次都跑
+      - name: 抓取融資融券數據（扣除ETF）
+        if: github.event.inputs.mode != 'taifex_only' && github.event.inputs.mode != 'crypto_only'
+        run: python scripts/fetch_margin.py
+
+      # 台股期貨：UTC 08:00 週一至週五，或手動指定
       - name: 判斷是否需要抓台股期貨
         id: check_taifex
         run: |
@@ -83,7 +89,6 @@ jobs:
       - name: 顯示最新數據
         run: cat data.json
 
-      # ── Push：自動解決 data.json 衝突 ──
       - name: Commit & Push data.json
         run: |
           git config user.name  "github-actions[bot]"
@@ -97,7 +102,6 @@ jobs:
               echo "✅ Push 成功"
               exit 0
             fi
-            echo "衝突，自動解決..."
             cp data.json /tmp/data_latest.json
             git fetch origin main
             git merge -X ours origin/main --no-edit 2>/dev/null || true
@@ -107,7 +111,6 @@ jobs:
               git commit -m "chore: 合併後更新 $(date +'%Y/%m/%d %H:%M UTC') [skip ci]"
             sleep $((i * 3))
           done
-          echo "❌ Push 失敗超過 5 次"
           exit 1
 
       - name: Setup Pages
