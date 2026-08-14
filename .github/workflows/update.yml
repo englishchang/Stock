@@ -2,7 +2,7 @@ name: 更新期交所 + 加密貨幣數據
 
 on:
   schedule:
-    - cron: "0 0,4,8,12,16,20 * * *"
+    - cron: "0 0,6,12,18 * * *"
   workflow_dispatch:
     inputs:
       mode:
@@ -68,7 +68,7 @@ jobs:
           echo "UTC: $(date -u)  HOUR=$HOUR  WDAY=$WDAY  MODE=$MODE"
           if [[ "$MODE" == "taifex_only" || "$MODE" == "all" ]]; then
             echo "run=true" >> $GITHUB_OUTPUT
-          elif [[ "$HOUR" == "08" && "$WDAY" -le 5 ]]; then
+          elif [[ "$HOUR" == "00" && "$WDAY" -le 6 ]]; then
             echo "run=true" >> $GITHUB_OUTPUT
           else
             echo "run=false" >> $GITHUB_OUTPUT
