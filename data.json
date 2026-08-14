@@ -84,5 +84,17 @@
         }
       }
     }
+  },
+  "margin": {
+    "total_margin_sheets": 8969841,
+    "total_short_sheets": 214046,
+    "ex_etf_margin_sheets": 6449181,
+    "ex_etf_short_sheets": 128489,
+    "ex_etf_margin_wan": 644.92,
+    "short_margin_ratio": 1.99,
+    "stock_count": 1063,
+    "etf_count": 231,
+    "score": 54,
+    "fetched_at": "2026/08/14 09:27"
   }
 }
