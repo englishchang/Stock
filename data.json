@@ -1,48 +1,48 @@
 {
-  "date": "2026/08/11",
-  "fetched_at": "2026/08/12 17:17",
+  "date": "2026/08/13",
+  "fetched_at": "2026/08/14 09:09",
   "tx": {
-    "dealer": 1899,
-    "trust": 83418,
-    "foreign": -88924,
-    "total": -3607
+    "dealer": 472,
+    "trust": 82327,
+    "foreign": -86249,
+    "total": -3450
   },
   "mtx": {
-    "dealer": -5954,
-    "trust": -1,
-    "foreign": -3835,
-    "total": -9790
+    "dealer": -5725,
+    "trust": 2,
+    "foreign": -2186,
+    "total": -7909
   },
   "tmf": {
-    "dealer": -33430,
+    "dealer": -26793,
     "trust": 0,
-    "foreign": 13362,
-    "total": -20068
+    "foreign": 13910,
+    "total": -12883
   },
   "options": {
-    "foreign_call": 10897,
-    "foreign_put": 21564,
-    "dealer_call": 29799,
-    "dealer_put": 31980,
-    "trust_call": 2,
+    "foreign_call": 11262,
+    "foreign_put": 17111,
+    "dealer_call": 26111,
+    "dealer_put": 26668,
+    "trust_call": 0,
     "trust_put": 165,
-    "opt_date": "2026/08/11"
+    "opt_date": "2026/08/13"
   },
   "scores": {
     "tx": 52,
-    "mtx": 60,
-    "tmf": 54,
-    "pc": 27,
-    "overall": 44
+    "mtx": 58,
+    "tmf": 52,
+    "pc": 36,
+    "overall": 47
   },
   "taiex": {
-    "close": 45518.07,
-    "change": 397.35,
-    "change_pct": 0.88,
-    "date": "2026/08/12"
+    "close": 46021.48,
+    "change": 900.78,
+    "change_pct": 2.0,
+    "date": "2026/08/13"
   },
   "crypto": {
-    "fetched_at": "2026/08/14 04:37",
+    "fetched_at": "2026/08/14 09:08",
     "fear_greed": {
       "value": 29,
       "label": "Fear"
@@ -51,9 +51,9 @@
     "data": {
       "BTCUSDT": {
         "symbol": "BTCUSDT",
-        "price": 63402,
-        "change_24h": -0.12,
-        "change_7d": -1.64,
+        "price": 63519,
+        "change_24h": 0.04,
+        "change_7d": -1.26,
         "fear_greed": {
           "value": 29,
           "label": "Fear"
@@ -68,9 +68,9 @@
       },
       "DOGEUSDT": {
         "symbol": "DOGEUSDT",
-        "price": 0.070204,
-        "change_24h": -0.51,
-        "change_7d": 2.18,
+        "price": 0.070203,
+        "change_24h": 0.5,
+        "change_7d": 1.3,
         "fear_greed": {
           "value": 29,
           "label": "Fear"
@@ -84,16 +84,5 @@
         }
       }
     }
-  },
-  "margin": {
-    "total_margin_bn": 89.61,
-    "total_short_k": 201947,
-    "ex_etf_margin_bn": 89.22,
-    "ex_etf_short_k": 201221,
-    "short_margin_ratio": 22.5534,
-    "stock_count": 1286,
-    "etf_count": 8,
-    "score": 2,
-    "fetched_at": "2026/08/14 04:37"
   }
 }
