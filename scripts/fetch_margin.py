@@ -3,28 +3,18 @@
 台股融資融券指標抓取（扣除 ETF）
 資料來源：TWSE OpenAPI /exchangeReport/MI_MARGN
 """
-import json
-import urllib.request
-import time
-import sys
+import json, urllib.request, time, sys
 from datetime import datetime, timezone, timedelta
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
 TWSE_BASE = "https://openapi.twse.com.tw/v1"
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (compatible; stock-dashboard/1.0)",
-    "Accept": "application/json"
-}
+HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; stock-dashboard/1.0)", "Accept": "application/json"}
 
-def is_etf(code: str) -> bool:
-    """
-    判斷是否為 ETF / ETN：
-    涵蓋 00 開頭的 4~6 碼標的 (如 0050, 00878, 00632R, 00940 等)
-    """
-    c = str(code).strip()
-    return c.startswith("00") or (c.startswith("0") and len(c) >= 4)
+def is_etf(code):
+    code = str(code).strip()
+    return code.startswith("0") and len(code) == 4
 
-def api_get(path: str, retries: int = 4, wait: int = 10):
+def api_get(path, retries=4, wait=10):
     url = f"{TWSE_BASE}{path}"
     for i in range(retries):
         try:
@@ -38,7 +28,7 @@ def api_get(path: str, retries: int = 4, wait: int = 10):
             else:
                 raise
 
-def parse_num(s) -> float:
+def parse_num(s):
     try:
         return float(str(s).replace(",", "").replace("，", "").strip())
     except Exception:
@@ -51,72 +41,61 @@ def fetch_margin():
         raise Exception("API 回傳空資料")
     print(f"   總筆數：{len(data)}", flush=True)
 
-    # 累計張數
-    total_margin_sheets = no_etf_margin_sheets = 0.0
-    total_short_sheets  = no_etf_short_sheets  = 0.0
+    total_margin = no_etf_margin = 0.0
+    total_short  = no_etf_short  = 0.0
     etf_count = stock_count = 0
 
     for row in data:
         code = str(row.get("股票代號", "")).strip()
         if not code:
             continue
-        
-        # 取得融資與融券餘額（單位：張）
         margin_today = parse_num(row.get("融資今日餘額", 0))
         short_today  = parse_num(row.get("融券今日餘額", 0))
-
-        total_margin_sheets += margin_today
-        total_short_sheets  += short_today
-
+        total_margin += margin_today
+        total_short  += short_today
         if is_etf(code):
             etf_count += 1
         else:
-            no_etf_margin_sheets += margin_today
-            no_etf_short_sheets  += short_today
-            stock_count += 1
+            no_etf_margin += margin_today
+            no_etf_short  += short_today
+            stock_count   += 1
 
-    # 萬張計算
-    total_margin_wan = round(total_margin_sheets / 10000, 2)
-    no_etf_margin_wan = round(no_etf_margin_sheets / 10000, 2)
+    # 千元 → 億元
+    total_margin_b  = round(total_margin   / 100000, 2)
+    no_etf_margin_b = round(no_etf_margin  / 100000, 2)
 
-    print(f"   全市場融資：{total_margin_sheets:,.0f} 張 ({total_margin_wan} 萬張，含 ETF {etf_count} 檔)", flush=True)
-    print(f"   扣ETF融資 ：{no_etf_margin_sheets:,.0f} 張 ({no_etf_margin_wan} 萬張，{stock_count} 檔個股)", flush=True)
-    print(f"   全市場融券：{total_short_sheets:,.0f} 張", flush=True)
-    print(f"   扣ETF融券 ：{no_etf_short_sheets:,.0f} 張", flush=True)
+    print(f"   全市場融資：{total_margin_b} 億元（ETF {etf_count} 檔）", flush=True)
+    print(f"   扣ETF融資：{no_etf_margin_b} 億元（{stock_count} 檔個股）", flush=True)
+    print(f"   全市場融券：{total_short:,.0f} 張", flush=True)
+    print(f"   扣ETF融券：{no_etf_short:,.0f} 張", flush=True)
 
-    # 正確券資比公式：(融券張數 / 融資張數) * 100%
-    short_margin_ratio = round((no_etf_short_sheets / no_etf_margin_sheets) * 100, 2) if no_etf_margin_sheets > 0 else 0.0
-    print(f"   扣ETF券資比：{short_margin_ratio}%", flush=True)
+    short_margin_ratio = round(no_etf_short / (no_etf_margin_b * 10000) * 100, 4) \
+        if no_etf_margin_b > 0 else 0
 
     return {
-        "total_margin_sheets":   round(total_margin_sheets),
-        "total_short_sheets":    round(total_short_sheets),
-        "ex_etf_margin_sheets":  round(no_etf_margin_sheets),
-        "ex_etf_short_sheets":   round(no_etf_short_sheets),
-        "ex_etf_margin_wan":     no_etf_margin_wan,
-        "short_margin_ratio":    short_margin_ratio,
-        "stock_count":           stock_count,
-        "etf_count":             etf_count,
+        "total_margin_bn":    total_margin_b,
+        "total_short_k":      round(total_short),
+        "ex_etf_margin_bn":   no_etf_margin_b,
+        "ex_etf_short_k":     round(no_etf_short),
+        "short_margin_ratio": short_margin_ratio,
+        "stock_count":        stock_count,
+        "etf_count":          etf_count,
     }
 
-def calc_score(ex_etf_margin_wan: float) -> int:
-    """
-    評分模型（依據扣除 ETF 後之個股融資總萬張數）：
-    以 600 萬張為中位基準 (50分)，每增減 100 萬張調整 10 分
-    """
-    baseline, scale = 600.0, 100.0
-    raw = 50 + (ex_etf_margin_wan - baseline) / scale * 10
+def calc_score(ex_etf_margin_bn):
+    """融資餘額越高 → 散戶槓桿越重 → 反指標風險越高 → 評分越高（0-100）"""
+    baseline, scale = 2500.0, 500.0
+    raw = 50 + (ex_etf_margin_bn - baseline) / scale * 10
     return max(0, min(100, int(round(raw))))
 
 def main():
     now_str = datetime.now(TZ_TAIPEI).strftime("%Y/%m/%d %H:%M")
     try:
         d = fetch_margin()
-        d["score"] = calc_score(d["ex_etf_margin_wan"])
+        d["score"] = calc_score(d["ex_etf_margin_bn"])
         d["fetched_at"] = now_str
-        print(f"📊 融資指標評分：{d['score']}", flush=True)
+        print(f"📊 融資槓桿評分：{d['score']}", flush=True)
 
-        existing = {}
         try:
             with open("data.json", "r", encoding="utf-8") as f:
                 existing = json.load(f)
