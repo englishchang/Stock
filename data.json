@@ -84,5 +84,16 @@
         }
       }
     }
+  },
+  "margin": {
+    "total_margin_bn": 88.15,
+    "total_short_k": 204455,
+    "ex_etf_margin_bn": 87.82,
+    "ex_etf_short_k": 203536,
+    "short_margin_ratio": 23.1765,
+    "stock_count": 1286,
+    "etf_count": 8,
+    "score": 2,
+    "fetched_at": "2026/08/19 16:50"
   }
 }
