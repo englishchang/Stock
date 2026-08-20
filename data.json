@@ -42,58 +42,58 @@
     "date": "2026/08/19"
   },
   "crypto": {
-    "fetched_at": "2026/08/19 20:59",
+    "fetched_at": "2026/08/20 09:40",
     "fear_greed": {
-      "value": 46,
-      "label": "Fear"
+      "value": 62,
+      "label": "Greed"
     },
-    "btc_dominance": 56.54,
+    "btc_dominance": 56.65,
     "data": {
       "BTCUSDT": {
         "symbol": "BTCUSDT",
-        "price": 64802,
-        "change_24h": 0.98,
-        "change_7d": 0.96,
+        "price": 69508,
+        "change_24h": 7.9,
+        "change_7d": 9.47,
         "fear_greed": {
-          "value": 46,
-          "label": "Fear"
+          "value": 62,
+          "label": "Greed"
         },
-        "btc_dominance": 56.54,
+        "btc_dominance": 56.65,
         "scores": {
-          "fear_greed": 46,
-          "momentum": 50,
+          "fear_greed": 62,
+          "momentum": 55,
           "btc_dom": 45,
-          "overall": 46
+          "overall": 56
         }
       },
       "DOGEUSDT": {
         "symbol": "DOGEUSDT",
-        "price": 0.070619,
-        "change_24h": 1.21,
-        "change_7d": -1.85,
+        "price": 0.075192,
+        "change_24h": 7.56,
+        "change_7d": 7.68,
         "fear_greed": {
-          "value": 46,
-          "label": "Fear"
+          "value": 62,
+          "label": "Greed"
         },
-        "btc_dominance": 56.54,
+        "btc_dominance": 56.65,
         "scores": {
-          "fear_greed": 46,
-          "momentum": 50,
+          "fear_greed": 62,
+          "momentum": 55,
           "btc_dom": 45,
-          "overall": 46
+          "overall": 56
         }
       }
     }
   },
   "margin": {
-    "total_margin_bn": 88.15,
-    "total_short_k": 204455,
-    "ex_etf_margin_bn": 87.82,
-    "ex_etf_short_k": 203536,
-    "short_margin_ratio": 23.1765,
+    "total_margin_bn": 88.28,
+    "total_short_k": 188334,
+    "ex_etf_margin_bn": 87.94,
+    "ex_etf_short_k": 187508,
+    "short_margin_ratio": 21.3223,
     "stock_count": 1286,
     "etf_count": 8,
     "score": 2,
-    "fetched_at": "2026/08/19 20:59"
+    "fetched_at": "2026/08/20 09:40"
   }
 }
