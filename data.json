@@ -42,23 +42,23 @@
     "date": "2026/08/19"
   },
   "crypto": {
-    "fetched_at": "2026/08/22 09:38",
+    "fetched_at": "2026/08/22 20:52",
     "fear_greed": {
       "value": 71,
       "label": "Greed"
     },
-    "btc_dominance": 58.79,
+    "btc_dominance": 58.78,
     "data": {
       "BTCUSDT": {
         "symbol": "BTCUSDT",
-        "price": 78123,
-        "change_24h": 4.76,
-        "change_7d": 24.12,
+        "price": 77338,
+        "change_24h": -0.01,
+        "change_7d": 22.86,
         "fear_greed": {
           "value": 71,
           "label": "Greed"
         },
-        "btc_dominance": 58.79,
+        "btc_dominance": 58.78,
         "scores": {
           "fear_greed": 71,
           "momentum": 78,
@@ -68,14 +68,14 @@
       },
       "DOGEUSDT": {
         "symbol": "DOGEUSDT",
-        "price": 0.092079,
-        "change_24h": 12.32,
-        "change_7d": 31.58,
+        "price": 0.091875,
+        "change_24h": 9.2,
+        "change_7d": 31.31,
         "fear_greed": {
           "value": 71,
           "label": "Greed"
         },
-        "btc_dominance": 58.79,
+        "btc_dominance": 58.78,
         "scores": {
           "fear_greed": 71,
           "momentum": 90,
@@ -86,14 +86,14 @@
     }
   },
   "margin": {
-    "total_margin_bn": 88.1,
-    "total_short_k": 197390,
-    "ex_etf_margin_bn": 87.76,
-    "ex_etf_short_k": 196709,
-    "short_margin_ratio": 22.4144,
+    "total_margin_bn": 88.48,
+    "total_short_k": 199998,
+    "ex_etf_margin_bn": 88.14,
+    "ex_etf_short_k": 199231,
+    "short_margin_ratio": 22.6039,
     "stock_count": 1287,
     "etf_count": 8,
     "score": 2,
-    "fetched_at": "2026/08/21 21:00"
+    "fetched_at": "2026/08/22 20:52"
   }
 }
