@@ -42,45 +42,45 @@
     "date": "2026/08/19"
   },
   "crypto": {
-    "fetched_at": "2026/08/23 20:52",
+    "fetched_at": "2026/08/24 09:46",
     "fear_greed": {
-      "value": 66,
+      "value": 73,
       "label": "Greed"
     },
-    "btc_dominance": 59.25,
+    "btc_dominance": 59.24,
     "data": {
       "BTCUSDT": {
         "symbol": "BTCUSDT",
-        "price": 77207,
-        "change_24h": -0.08,
-        "change_7d": 22.63,
+        "price": 77218,
+        "change_24h": -0.04,
+        "change_7d": 22.59,
         "fear_greed": {
-          "value": 66,
+          "value": 73,
           "label": "Greed"
         },
-        "btc_dominance": 59.25,
+        "btc_dominance": 59.24,
         "scores": {
-          "fear_greed": 66,
+          "fear_greed": 73,
           "momentum": 78,
           "btc_dom": 45,
-          "overall": 62
+          "overall": 66
         }
       },
       "DOGEUSDT": {
         "symbol": "DOGEUSDT",
-        "price": 0.092166,
-        "change_24h": 0.58,
-        "change_7d": 32.17,
+        "price": 0.091445,
+        "change_24h": -2.15,
+        "change_7d": 30.87,
         "fear_greed": {
-          "value": 66,
+          "value": 73,
           "label": "Greed"
         },
-        "btc_dominance": 59.25,
+        "btc_dominance": 59.24,
         "scores": {
-          "fear_greed": 66,
+          "fear_greed": 73,
           "momentum": 90,
           "btc_dom": 45,
-          "overall": 64
+          "overall": 68
         }
       }
     }
@@ -94,6 +94,6 @@
     "stock_count": 1287,
     "etf_count": 8,
     "score": 2,
-    "fetched_at": "2026/08/23 20:52"
+    "fetched_at": "2026/08/24 09:46"
   }
 }
