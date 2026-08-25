@@ -66,13 +66,8 @@ jobs:
           WDAY=$(date -u +%u)
           MODE="${{ github.event.inputs.mode }}"
           echo "UTC: $(date -u)  HOUR=$HOUR  WDAY=$WDAY  MODE=$MODE"
-       -   if [[ "$MODE" == "taifex_only" || "$MODE" == "all" ]]; then
-       -     echo "run=true" >> $GITHUB_OUTPUT
-       -   elif [[ "$HOUR" == "00" && "$WDAY" -le 6 ]]; then
-            echo "run=true" >> $GITHUB_OUTPUT
-       -  else
-       -     echo "run=false" >> $GITHUB_OUTPUT
-       -   fi
+          echo "run=true" >> $GITHUB_OUTPUT
+
 
       - name: 抓取期交所數據
         if: steps.check_taifex.outputs.run == 'true'
