@@ -2,7 +2,7 @@ name: 更新期交所 + 加密貨幣數據
 
 on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 1 * * *"
   workflow_dispatch:
     inputs:
       mode:
