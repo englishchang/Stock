@@ -1,6 +1,6 @@
 {
   "date": "2026/08/28",
-  "fetched_at": "2026/08/29 20:39",
+  "fetched_at": "2026/08/30 14:11",
   "tx": {
     "dealer": 657,
     "trust": 76752,
@@ -42,25 +42,25 @@
     "date": "2026/08/28"
   },
   "crypto": {
-    "fetched_at": "2026/08/29 20:39",
+    "fetched_at": "2026/08/30 14:10",
     "fear_greed": {
-      "value": 68,
+      "value": 69,
       "label": "Greed"
     },
-    "btc_dominance": 58.98,
+    "btc_dominance": 59.47,
     "data": {
       "BTCUSDT": {
         "symbol": "BTCUSDT",
-        "price": 77560,
-        "change_24h": -2.34,
-        "change_7d": 0.59,
+        "price": 78120,
+        "change_24h": 0.71,
+        "change_7d": 2.68,
         "fear_greed": {
-          "value": 68,
+          "value": 69,
           "label": "Greed"
         },
-        "btc_dominance": 58.98,
+        "btc_dominance": 59.47,
         "scores": {
-          "fear_greed": 68,
+          "fear_greed": 69,
           "momentum": 50,
           "btc_dom": 45,
           "overall": 58
@@ -68,16 +68,16 @@
       },
       "DOGEUSDT": {
         "symbol": "DOGEUSDT",
-        "price": 0.084739,
-        "change_24h": -2.31,
-        "change_7d": -5.65,
+        "price": 0.08496,
+        "change_24h": 0.14,
+        "change_7d": -5.13,
         "fear_greed": {
-          "value": 68,
+          "value": 69,
           "label": "Greed"
         },
-        "btc_dominance": 58.98,
+        "btc_dominance": 59.47,
         "scores": {
-          "fear_greed": 68,
+          "fear_greed": 69,
           "momentum": 40,
           "btc_dom": 45,
           "overall": 56
