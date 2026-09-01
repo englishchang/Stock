@@ -1,6 +1,6 @@
 {
   "date": "2026/08/31",
-  "fetched_at": "2026/09/01 11:58",
+  "fetched_at": "2026/09/01 12:00",
   "tx": {
     "dealer": 1609,
     "trust": 75878,
@@ -36,13 +36,13 @@
     "overall": 48
   },
   "taiex": {
-    "close": 46853.98,
-    "change": 725.51,
-    "change_pct": 1.57,
+    "close": 46812.75,
+    "change": 684.28,
+    "change_pct": 1.48,
     "date": "2026/09/01"
   },
   "crypto": {
-    "fetched_at": "2026/09/01 11:58",
+    "fetched_at": "2026/09/01 11:59",
     "fear_greed": {
       "value": 69,
       "label": "Greed"
@@ -51,8 +51,8 @@
     "data": {
       "BTCUSDT": {
         "symbol": "BTCUSDT",
-        "price": 78665,
-        "change_24h": 1.17,
+        "price": 78652,
+        "change_24h": 1.18,
         "change_7d": -2.45,
         "fear_greed": {
           "value": 69,
@@ -68,9 +68,9 @@
       },
       "DOGEUSDT": {
         "symbol": "DOGEUSDT",
-        "price": 0.083163,
-        "change_24h": 0.96,
-        "change_7d": -9.64,
+        "price": 0.083139,
+        "change_24h": 1.01,
+        "change_7d": -9.66,
         "fear_greed": {
           "value": 69,
           "label": "Greed"
