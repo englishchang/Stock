@@ -50,12 +50,10 @@ jobs:
 
       # 加密貨幣：每次都跑
       - name: 抓取 BTC / DOGE 數據
-        if: github.event.inputs.mode != 'taifex_only' && github.event.inputs.mode != 'margin_only'
         run: python scripts/fetch_crypto.py
 
       # 融資融券（扣除ETF）：每次都跑
       - name: 抓取融資融券數據（扣除ETF）
-        if: github.event.inputs.mode != 'taifex_only' && github.event.inputs.mode != 'crypto_only'
         run: python scripts/fetch_margin.py
 
       # 台股期貨：UTC 08:00 週一至週五，或手動指定
