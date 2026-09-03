@@ -235,6 +235,8 @@ def main():
         output["taiex"] = taiex
     if "crypto" in existing:
         output["crypto"] = existing["crypto"]
+    if "margin" in existing:
+        output["margin"] = existing["margin"]    
 
     with open("data.json","w",encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
