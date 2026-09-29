@@ -1,6 +1,6 @@
 {
   "date": "2026/09/24",
-  "fetched_at": "2026/09/28 11:30",
+  "fetched_at": "2026/09/29 12:06",
   "tx": {
     "dealer": -1520,
     "trust": 72864,
@@ -36,51 +36,51 @@
     "overall": 58
   },
   "taiex": {
-    "close": 48024.6,
-    "change": -132.69,
-    "change_pct": -0.28,
-    "date": "2026/09/24"
+    "close": 47732.03,
+    "change": -292.57,
+    "change_pct": -0.61,
+    "date": "2026/09/29"
   },
   "crypto": {
-    "fetched_at": "2026/09/28 11:30",
+    "fetched_at": "2026/09/29 12:05",
     "fear_greed": {
-      "value": 74,
+      "value": 73,
       "label": "Greed"
     },
-    "btc_dominance": 58.67,
+    "btc_dominance": 58.33,
     "data": {
       "BTCUSDT": {
         "symbol": "BTCUSDT",
-        "price": 83341,
-        "change_24h": -1.22,
-        "change_7d": 2.52,
+        "price": 83017,
+        "change_24h": -0.28,
+        "change_7d": -3.09,
         "fear_greed": {
-          "value": 74,
+          "value": 73,
           "label": "Greed"
         },
-        "btc_dominance": 58.67,
+        "btc_dominance": 58.33,
         "scores": {
-          "fear_greed": 74,
-          "momentum": 50,
+          "fear_greed": 73,
+          "momentum": 40,
           "btc_dom": 45,
-          "overall": 60
+          "overall": 58
         }
       },
       "DOGEUSDT": {
         "symbol": "DOGEUSDT",
-        "price": 0.094321,
-        "change_24h": -1.86,
-        "change_7d": 7.08,
+        "price": 0.092862,
+        "change_24h": -0.66,
+        "change_7d": -8.76,
         "fear_greed": {
-          "value": 74,
+          "value": 73,
           "label": "Greed"
         },
-        "btc_dominance": 58.67,
+        "btc_dominance": 58.33,
         "scores": {
-          "fear_greed": 74,
-          "momentum": 55,
+          "fear_greed": 73,
+          "momentum": 40,
           "btc_dom": 45,
-          "overall": 62
+          "overall": 58
         }
       }
     }
@@ -94,6 +94,6 @@
     "stock_count": 1289,
     "etf_count": 8,
     "score": 2,
-    "fetched_at": "2026/09/28 11:30"
+    "fetched_at": "2026/09/29 12:06"
   }
 }
