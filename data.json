@@ -1,6 +1,6 @@
 {
   "date": "2026/10/14",
-  "fetched_at": "2026/10/15 11:05",
+  "fetched_at": "2026/10/16 11:02",
   "tx": {
     "dealer": 2314,
     "trust": 78417,
@@ -42,58 +42,59 @@
     "date": "2026/10/15"
   },
   "crypto": {
-    "fetched_at": "2026/10/15 11:04",
+    "fetched_at": "2026/10/16 11:01",
     "fear_greed": {
-      "value": 53,
-      "label": "Neutral"
+      "value": 63,
+      "label": "Greed"
     },
-    "btc_dominance": 59.51,
+    "btc_dominance": 59.28,
     "data": {
       "BTCUSDT": {
         "symbol": "BTCUSDT",
-        "price": 81126,
-        "change_24h": -2.98,
-        "change_7d": -2.37,
+        "price": 81932,
+        "change_24h": 0.76,
+        "change_7d": -0.11,
         "fear_greed": {
-          "value": 53,
-          "label": "Neutral"
+          "value": 63,
+          "label": "Greed"
         },
-        "btc_dominance": 59.51,
+        "btc_dominance": 59.28,
         "scores": {
-          "fear_greed": 53,
+          "fear_greed": 63,
           "momentum": 50,
           "btc_dom": 45,
-          "overall": 50
+          "overall": 55
         }
       },
       "DOGEUSDT": {
         "symbol": "DOGEUSDT",
-        "price": 0.079618,
-        "change_24h": -6.22,
-        "change_7d": -10.52,
+        "price": 0.081344,
+        "change_24h": 1.73,
+        "change_7d": -3.94,
         "fear_greed": {
-          "value": 53,
-          "label": "Neutral"
+          "value": 63,
+          "label": "Greed"
         },
-        "btc_dominance": 59.51,
+        "btc_dominance": 59.28,
         "scores": {
-          "fear_greed": 53,
-          "momentum": 32,
+          "fear_greed": 63,
+          "momentum": 40,
           "btc_dom": 45,
-          "overall": 46
+          "overall": 53
         }
       }
     }
   },
   "margin": {
-    "total_margin_bn": 94.67,
-    "total_short_k": 228653,
-    "ex_etf_margin_bn": 94.27,
-    "ex_etf_short_k": 227855,
-    "short_margin_ratio": 24.1705,
-    "stock_count": 1291,
+    "total_margin_bn": 95.21,
+    "total_short_k": 229150,
+    "ex_etf_margin_bn": 94.81,
+    "ex_etf_short_k": 228633,
+    "short_margin_ratio": 24.1149,
+    "stock_count": 1292,
     "etf_count": 8,
     "score": 2,
-    "fetched_at": "2026/10/15 11:05"
-  }
+    "fetched_at": "2026/10/16 11:01"
+  },
+  "fetch_error": "Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)"
 }
