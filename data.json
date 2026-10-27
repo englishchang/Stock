@@ -1,6 +1,6 @@
 {
   "date": "2026/10/22",
-  "fetched_at": "2026/10/26 11:05",
+  "fetched_at": "2026/10/27 11:36",
   "tx": {
     "dealer": 3260,
     "trust": 83601,
@@ -36,51 +36,51 @@
     "overall": 57
   },
   "taiex": {
-    "close": 46041.43,
-    "change": 0.0,
-    "change_pct": 0.0,
-    "date": "2026/10/22"
+    "close": 45744.78,
+    "change": -296.65,
+    "change_pct": -0.64,
+    "date": "2026/10/27"
   },
   "crypto": {
-    "fetched_at": "2026/10/26 11:05",
+    "fetched_at": "2026/10/27 11:36",
     "fear_greed": {
-      "value": 50,
+      "value": 48,
       "label": "Neutral"
     },
-    "btc_dominance": 59.97,
+    "btc_dominance": 59.42,
     "data": {
       "BTCUSDT": {
         "symbol": "BTCUSDT",
-        "price": 79604,
-        "change_24h": -1.52,
-        "change_7d": -3.68,
+        "price": 79783,
+        "change_24h": 0.3,
+        "change_7d": -2.36,
         "fear_greed": {
-          "value": 50,
+          "value": 48,
           "label": "Neutral"
         },
-        "btc_dominance": 59.97,
+        "btc_dominance": 59.42,
         "scores": {
-          "fear_greed": 50,
-          "momentum": 40,
+          "fear_greed": 48,
+          "momentum": 50,
           "btc_dom": 45,
-          "overall": 46
+          "overall": 48
         }
       },
       "DOGEUSDT": {
         "symbol": "DOGEUSDT",
-        "price": 0.07657,
-        "change_24h": -1.4,
-        "change_7d": -4.4,
+        "price": 0.077457,
+        "change_24h": 1.5,
+        "change_7d": -2.58,
         "fear_greed": {
-          "value": 50,
+          "value": 48,
           "label": "Neutral"
         },
-        "btc_dominance": 59.97,
+        "btc_dominance": 59.42,
         "scores": {
-          "fear_greed": 50,
-          "momentum": 40,
+          "fear_greed": 48,
+          "momentum": 50,
           "btc_dom": 45,
-          "overall": 46
+          "overall": 48
         }
       }
     }
@@ -94,6 +94,6 @@
     "stock_count": 1294,
     "etf_count": 8,
     "score": 2,
-    "fetched_at": "2026/10/26 11:05"
+    "fetched_at": "2026/10/27 11:36"
   }
 }
