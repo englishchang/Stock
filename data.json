@@ -1,6 +1,6 @@
 {
   "date": "2026/10/22",
-  "fetched_at": "2026/10/28 11:52",
+  "fetched_at": "2026/10/29 12:16",
   "tx": {
     "dealer": 3260,
     "trust": 83601,
@@ -42,59 +42,59 @@
     "date": "2026/10/27"
   },
   "crypto": {
-    "fetched_at": "2026/10/28 11:52",
+    "fetched_at": "2026/10/29 12:16",
     "fear_greed": {
       "value": 51,
       "label": "Neutral"
     },
-    "btc_dominance": 59.41,
+    "btc_dominance": 59.48,
     "data": {
       "BTCUSDT": {
         "symbol": "BTCUSDT",
-        "price": 81092,
-        "change_24h": 1.7,
-        "change_7d": -1.98,
+        "price": 79776,
+        "change_24h": -1.37,
+        "change_7d": -3.75,
         "fear_greed": {
           "value": 51,
           "label": "Neutral"
         },
-        "btc_dominance": 59.41,
+        "btc_dominance": 59.48,
         "scores": {
           "fear_greed": 51,
-          "momentum": 50,
+          "momentum": 40,
           "btc_dom": 45,
-          "overall": 49
+          "overall": 47
         }
       },
       "DOGEUSDT": {
         "symbol": "DOGEUSDT",
-        "price": 0.079851,
-        "change_24h": 3.21,
-        "change_7d": -2.34,
+        "price": 0.07764,
+        "change_24h": -2.48,
+        "change_7d": -3.33,
         "fear_greed": {
           "value": 51,
           "label": "Neutral"
         },
-        "btc_dominance": 59.41,
+        "btc_dominance": 59.48,
         "scores": {
           "fear_greed": 51,
-          "momentum": 50,
+          "momentum": 40,
           "btc_dom": 45,
-          "overall": 49
+          "overall": 47
         }
       }
     }
   },
   "margin": {
     "total_margin_bn": 95.51,
-    "total_short_k": 217708,
+    "total_short_k": 193040,
     "ex_etf_margin_bn": 95.07,
-    "ex_etf_short_k": 216959,
-    "short_margin_ratio": 22.821,
-    "stock_count": 1294,
+    "ex_etf_short_k": 192624,
+    "short_margin_ratio": 20.2613,
+    "stock_count": 1296,
     "etf_count": 8,
     "score": 2,
-    "fetched_at": "2026/10/28 11:52"
+    "fetched_at": "2026/10/29 12:16"
   },
   "fetch_error": "Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)"
 }
