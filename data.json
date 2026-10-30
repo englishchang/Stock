@@ -1,100 +1,99 @@
 {
-  "date": "2026/10/22",
-  "fetched_at": "2026/10/29 12:16",
+  "date": "2026/10/29",
+  "fetched_at": "2026/10/30 12:16",
   "tx": {
-    "dealer": 3260,
-    "trust": 83601,
-    "foreign": -87297,
-    "total": -436
+    "dealer": 1511,
+    "trust": 87218,
+    "foreign": -89522,
+    "total": -793
   },
   "mtx": {
-    "dealer": -9922,
-    "trust": -25,
-    "foreign": -3140,
-    "total": -13087
+    "dealer": -10003,
+    "trust": -24,
+    "foreign": -2886,
+    "total": -12913
   },
   "tmf": {
-    "dealer": -43459,
+    "dealer": -40489,
     "trust": 0,
-    "foreign": -11872,
-    "total": -55331
+    "foreign": -12484,
+    "total": -52973
   },
   "options": {
-    "foreign_call": 14300,
-    "foreign_put": 11371,
-    "dealer_call": 38586,
-    "dealer_put": 21472,
+    "foreign_call": 16389,
+    "foreign_put": 12363,
+    "dealer_call": 38881,
+    "dealer_put": 23672,
     "trust_call": 5,
-    "trust_put": 445,
-    "opt_date": "2026/10/22"
+    "trust_put": 347,
+    "opt_date": "2026/10/29"
   },
   "scores": {
     "tx": 50,
     "mtx": 63,
     "tmf": 60,
-    "pc": 58,
-    "overall": 57
+    "pc": 60,
+    "overall": 58
   },
   "taiex": {
-    "close": 45744.78,
-    "change": -296.65,
-    "change_pct": -0.64,
-    "date": "2026/10/27"
+    "close": 45200.96,
+    "change": -1167.37,
+    "change_pct": -2.52,
+    "date": "2026/10/30"
   },
   "crypto": {
-    "fetched_at": "2026/10/29 12:16",
+    "fetched_at": "2026/10/30 12:15",
     "fear_greed": {
-      "value": 51,
-      "label": "Neutral"
+      "value": 30,
+      "label": "Fear"
     },
-    "btc_dominance": 59.48,
+    "btc_dominance": 59.3,
     "data": {
       "BTCUSDT": {
         "symbol": "BTCUSDT",
-        "price": 79776,
-        "change_24h": -1.37,
-        "change_7d": -3.75,
+        "price": 77945,
+        "change_24h": -2.32,
+        "change_7d": -4.72,
         "fear_greed": {
-          "value": 51,
-          "label": "Neutral"
+          "value": 30,
+          "label": "Fear"
         },
-        "btc_dominance": 59.48,
+        "btc_dominance": 59.3,
         "scores": {
-          "fear_greed": 51,
+          "fear_greed": 30,
           "momentum": 40,
           "btc_dom": 45,
-          "overall": 47
+          "overall": 36
         }
       },
       "DOGEUSDT": {
         "symbol": "DOGEUSDT",
-        "price": 0.07764,
-        "change_24h": -2.48,
-        "change_7d": -3.33,
+        "price": 0.075829,
+        "change_24h": -2.45,
+        "change_7d": -4.68,
         "fear_greed": {
-          "value": 51,
-          "label": "Neutral"
+          "value": 30,
+          "label": "Fear"
         },
-        "btc_dominance": 59.48,
+        "btc_dominance": 59.3,
         "scores": {
-          "fear_greed": 51,
+          "fear_greed": 30,
           "momentum": 40,
           "btc_dom": 45,
-          "overall": 47
+          "overall": 36
         }
       }
     }
   },
   "margin": {
-    "total_margin_bn": 95.51,
-    "total_short_k": 193040,
-    "ex_etf_margin_bn": 95.07,
-    "ex_etf_short_k": 192624,
-    "short_margin_ratio": 20.2613,
+    "total_margin_bn": 95.89,
+    "total_short_k": 189002,
+    "ex_etf_margin_bn": 95.44,
+    "ex_etf_short_k": 188561,
+    "short_margin_ratio": 19.757,
     "stock_count": 1296,
     "etf_count": 8,
     "score": 2,
-    "fetched_at": "2026/10/29 12:16"
-  },
-  "fetch_error": "Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)"
+    "fetched_at": "2026/10/30 12:16"
+  }
 }
