@@ -1,6 +1,6 @@
 {
   "date": "2026/10/30",
-  "fetched_at": "2026/11/01 12:13",
+  "fetched_at": "2026/11/02 12:16",
   "tx": {
     "dealer": 1736,
     "trust": 89211,
@@ -36,51 +36,51 @@
     "overall": 59
   },
   "taiex": {
-    "close": 45211.83,
-    "change": -1156.5,
-    "change_pct": -2.49,
-    "date": "2026/10/30"
+    "close": 45108.8,
+    "change": -103.03,
+    "change_pct": -0.23,
+    "date": "2026/11/02"
   },
   "crypto": {
-    "fetched_at": "2026/11/01 12:13",
+    "fetched_at": "2026/11/02 12:16",
     "fear_greed": {
-      "value": 34,
+      "value": 37,
       "label": "Fear"
     },
-    "btc_dominance": 59.29,
+    "btc_dominance": 60.0,
     "data": {
       "BTCUSDT": {
         "symbol": "BTCUSDT",
-        "price": 77648,
-        "change_24h": 0.62,
-        "change_7d": -3.87,
+        "price": 78555,
+        "change_24h": 1.13,
+        "change_7d": -1.21,
         "fear_greed": {
-          "value": 34,
+          "value": 37,
           "label": "Fear"
         },
-        "btc_dominance": 59.29,
+        "btc_dominance": 60.0,
         "scores": {
-          "fear_greed": 34,
-          "momentum": 40,
-          "btc_dom": 45,
-          "overall": 38
+          "fear_greed": 37,
+          "momentum": 50,
+          "btc_dom": 38,
+          "overall": 40
         }
       },
       "DOGEUSDT": {
         "symbol": "DOGEUSDT",
-        "price": 0.075404,
-        "change_24h": -0.13,
-        "change_7d": -3.07,
+        "price": 0.076045,
+        "change_24h": 0.74,
+        "change_7d": -0.24,
         "fear_greed": {
-          "value": 34,
+          "value": 37,
           "label": "Fear"
         },
-        "btc_dominance": 59.29,
+        "btc_dominance": 60.0,
         "scores": {
-          "fear_greed": 34,
-          "momentum": 40,
-          "btc_dom": 45,
-          "overall": 38
+          "fear_greed": 37,
+          "momentum": 50,
+          "btc_dom": 38,
+          "overall": 40
         }
       }
     }
@@ -94,6 +94,6 @@
     "stock_count": 1296,
     "etf_count": 8,
     "score": 2,
-    "fetched_at": "2026/11/01 12:13"
+    "fetched_at": "2026/11/02 12:16"
   }
 }
