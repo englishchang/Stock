@@ -1,6 +1,6 @@
 {
   "date": "2026/11/13",
-  "fetched_at": "2026/11/14 12:50",
+  "fetched_at": "2026/11/15 12:42",
   "tx": {
     "dealer": -2771,
     "trust": 99923,
@@ -42,45 +42,45 @@
     "date": "2026/11/13"
   },
   "crypto": {
-    "fetched_at": "2026/11/14 12:50",
+    "fetched_at": "2026/11/15 12:41",
     "fear_greed": {
-      "value": 13,
+      "value": 10,
       "label": "Extreme Fear"
     },
-    "btc_dominance": 58.77,
+    "btc_dominance": 58.61,
     "data": {
       "BTCUSDT": {
         "symbol": "BTCUSDT",
-        "price": 67126,
-        "change_24h": -2.21,
-        "change_7d": -11.46,
+        "price": 64805,
+        "change_24h": -3.44,
+        "change_7d": -14.57,
         "fear_greed": {
-          "value": 13,
+          "value": 10,
           "label": "Extreme Fear"
         },
-        "btc_dominance": 58.77,
+        "btc_dominance": 58.61,
         "scores": {
-          "fear_greed": 13,
+          "fear_greed": 10,
           "momentum": 32,
           "btc_dom": 45,
-          "overall": 26
+          "overall": 25
         }
       },
       "DOGEUSDT": {
         "symbol": "DOGEUSDT",
-        "price": 0.063074,
-        "change_24h": -0.18,
-        "change_7d": -12.36,
+        "price": 0.058626,
+        "change_24h": -7.04,
+        "change_7d": -17.64,
         "fear_greed": {
-          "value": 13,
+          "value": 10,
           "label": "Extreme Fear"
         },
-        "btc_dominance": 58.77,
+        "btc_dominance": 58.61,
         "scores": {
-          "fear_greed": 13,
+          "fear_greed": 10,
           "momentum": 32,
           "btc_dom": 45,
-          "overall": 26
+          "overall": 25
         }
       }
     }
@@ -94,6 +94,6 @@
     "stock_count": 1301,
     "etf_count": 8,
     "score": 2,
-    "fetched_at": "2026/11/14 12:50"
+    "fetched_at": "2026/11/15 12:42"
   }
 }
