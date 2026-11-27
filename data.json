@@ -1,6 +1,6 @@
 {
   "date": "2026/11/25",
-  "fetched_at": "2026/11/26 14:44",
+  "fetched_at": "2026/11/27 14:36",
   "tx": {
     "dealer": -651,
     "trust": 100918,
@@ -42,58 +42,59 @@
     "date": "2026/11/26"
   },
   "crypto": {
-    "fetched_at": "2026/11/26 14:44",
+    "fetched_at": "2026/11/27 14:36",
     "fear_greed": {
-      "value": 11,
+      "value": 12,
       "label": "Extreme Fear"
     },
-    "btc_dominance": 57.89,
+    "btc_dominance": 58.0,
     "data": {
       "BTCUSDT": {
         "symbol": "BTCUSDT",
-        "price": 60426,
-        "change_24h": 2.16,
-        "change_7d": -4.51,
+        "price": 61726,
+        "change_24h": 1.89,
+        "change_7d": -0.21,
         "fear_greed": {
-          "value": 11,
+          "value": 12,
           "label": "Extreme Fear"
         },
-        "btc_dominance": 57.89,
+        "btc_dominance": 58.0,
         "scores": {
-          "fear_greed": 11,
-          "momentum": 40,
+          "fear_greed": 12,
+          "momentum": 50,
           "btc_dom": 45,
-          "overall": 27
+          "overall": 30
         }
       },
       "DOGEUSDT": {
         "symbol": "DOGEUSDT",
-        "price": 0.056426,
-        "change_24h": 2.8,
-        "change_7d": -4.49,
+        "price": 0.05812,
+        "change_24h": 2.77,
+        "change_7d": 0.97,
         "fear_greed": {
-          "value": 11,
+          "value": 12,
           "label": "Extreme Fear"
         },
-        "btc_dominance": 57.89,
+        "btc_dominance": 58.0,
         "scores": {
-          "fear_greed": 11,
-          "momentum": 40,
+          "fear_greed": 12,
+          "momentum": 50,
           "btc_dom": 45,
-          "overall": 27
+          "overall": 30
         }
       }
     }
   },
   "margin": {
-    "total_margin_bn": 93.83,
-    "total_short_k": 169365,
-    "ex_etf_margin_bn": 92.98,
-    "ex_etf_short_k": 168786,
-    "short_margin_ratio": 18.1529,
+    "total_margin_bn": 88.26,
+    "total_short_k": 173621,
+    "ex_etf_margin_bn": 87.46,
+    "ex_etf_short_k": 172967,
+    "short_margin_ratio": 19.7767,
     "stock_count": 1304,
     "etf_count": 8,
     "score": 2,
-    "fetched_at": "2026/11/26 14:44"
-  }
+    "fetched_at": "2026/11/27 14:36"
+  },
+  "fetch_error": "Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)"
 }
